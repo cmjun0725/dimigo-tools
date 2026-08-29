@@ -383,11 +383,7 @@ function switchSub(ci,si){
 }
 function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 
-function extractVideoId(url){
-  if(!url)return null;
-  var m=url.match(/(?:v=|/embed/|/v/|youtu.be/)([a-zA-Z0-9_-]{11})/);
-  return m?m[1]:null;
-}
+function extractVideoId(url){if(!url)return null;try{var u=new URL(url.indexOf("?")>-1?url:"https://"+url);var v=u.searchParams.get("v");if(v&&v.length===11&&/^[a-zA-Z0-9_-]+$/.test(v))return v;var segs=u.pathname.split("/").filter(Boolean);if(segs.length>0&&segs[segs.length-1].length===11&&/^[a-zA-Z0-9_-]+$/.test(segs[segs.length-1]))return segs[segs.length-1]}catch(e){}return null}
 async function analyze(){
   hideError();
   const url=document.getElementById('urlInput').value.trim();
