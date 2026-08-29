@@ -383,6 +383,11 @@ function switchSub(ci,si){
 }
 function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 
+function extractVideoId(url){
+  if(!url)return null;
+  var m=url.match(/(?:v=|/embed/|/v/|youtu.be/)([a-zA-Z0-9_-]{11})/);
+  return m?m[1]:null;
+}
 async function analyze(){
   hideError();
   const url=document.getElementById('urlInput').value.trim();
