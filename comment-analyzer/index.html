@@ -330,7 +330,7 @@ function getTypeEmoji(type){
   return'😐';
 }
 
-function renderSummary(videoInfo,analysis){
+function renderSummary(videoInfo,analysis){if(!videoInfo)videoInfo={title:"YouTube 영상",channel:"",viewCount:0,likeCount:0,commentCount:0,thumbnail:""};
   var h='<div class="summary-card">';
   h+='<h3>📊 AI 분석 요약</h3>';
   if(videoInfo){
@@ -411,7 +411,7 @@ window.analyze=async function(){
     updateLoading('AI 분석 중...','AI가 영상과 댓글 반응을 분석하고 있습니다',40);
 
     var analysis=await analyzeWithAI(videoInfo,url);
-    analysis.totalAnalyzed=analysis.totalAnalyzed||videoInfo?(videoInfo.commentCount||0):0;
+    if(!analysis.totalAnalyzed)analysis.totalAnalyzed=videoInfo?(videoInfo.commentCount||0):0;
     analysis.categories.forEach(function(cat){
       if(!cat.count)cat.count=Math.floor(Math.random()*50)+10;
     });
