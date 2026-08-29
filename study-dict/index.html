@@ -9,13 +9,14 @@
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--accent-glow)}50%{box-shadow:0 0 20px 4px var(--accent-glow)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--accent-glow)}50%{box-shadow:0 0 24px 6px var(--accent-glow)}}
+@keyframes glow{0%,100%{opacity:.6}50%{opacity:1}}
 :root{
   --bg:#08080d;--surface:#12121c;--surface2:#1a1a2e;--surface3:#222238;
   --border:#2a2a45;--border-glow:rgba(108,92,231,.3);
   --text:#f0f0f8;--text2:#8888a8;--text3:#555570;
   --accent:#6c5ce7;--accent2:#a29bfe;--accent-glow:rgba(108,92,231,.4);
-  --positive:#00cec9;--negative:#ff6b6b;--neutral:#a29bfe;
+  --positive:#00cec9;--negative:#ff6b6b;--neutral:#a29bfe;--warning:#ffeaa7;
   --history:#ff6b6b;--science:#00cec9;--korean:#ffeaa7;--math:#74b9ff;
   --english:#fd79a8;--ethics:#a29bfe;--music:#fd79a8;--art:#e17055;--pe:#55efc4;
   --radius:16px;--radius-sm:10px;--shadow:0 8px 32px rgba(0,0,0,.5);
@@ -67,33 +68,63 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .example-tag{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:7px 16px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:5px}
 .example-tag:hover{border-color:var(--accent);color:var(--accent2);background:rgba(108,92,231,.08)}
 
-.timeline-section{max-width:900px;margin:36px auto 0;padding:0 20px;position:relative;z-index:1}
+/* === 타임라인 === */
+.timeline-section{max-width:1100px;margin:36px auto 0;padding:0 16px;position:relative;z-index:1}
 .timeline-section.hidden{display:none}
-.timeline-title{font-size:13px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.timeline-controls{display:flex;gap:6px;margin-bottom:10px;align-items:center}
-.tl-z-btn{background:var(--surface);border:1px solid var(--border);color:var(--text2);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.tl-z-btn:hover{border-color:var(--accent);color:var(--accent2)}
-.tl-z-label{font-size:11px;color:var(--text3);min-width:50px;text-align:center}
-.timeline-wrap{position:relative;overflow-x:auto;overflow-y:hidden;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px 20px 20px;scrollbar-width:thin;scrollbar-color:var(--accent) var(--surface2)}
-.timeline-track{position:relative;min-height:220px;transition:width .3s}
-.timeline-line{position:absolute;top:50%;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--border),var(--accent) 20%,var(--accent) 80%,var(--border));transform:translateY(-50%);border-radius:2px;opacity:.6}
-.timeline-era{position:absolute;top:50%;transform:translate(-50%,-50%);text-align:center;cursor:pointer;transition:all .25s;padding:4px 2px}
-.timeline-era:hover{transform:translate(-50%,-50%) scale(1.08);z-index:5}
-.tl-era-dot{width:16px;height:16px;border-radius:50%;border:3px solid var(--bg);position:absolute;left:50%;transform:translateX(-50%);z-index:2;transition:all .3s;box-shadow:0 2px 8px rgba(0,0,0,.3)}
-.tl-era-dot.hl{animation:pulse 2s infinite;width:20px;height:20px}
-.tl-era-label{font-size:11px;font-weight:700;white-space:nowrap}
-.tl-era-years{font-size:9px;color:var(--text3);white-space:nowrap;margin-top:12px}
-.timeline-event{position:absolute;cursor:pointer;transition:all .25s;z-index:4}
-.timeline-event:hover{transform:translate(-50%,-50%) scale(1.3);z-index:10}
-.tl-ev-dot{width:10px;height:10px;border-radius:50%;background:var(--history);border:2px solid var(--surface);box-shadow:0 2px 6px rgba(0,0,0,.4)}
-.tl-ev-dot.hl{background:var(--accent);box-shadow:0 0 16px var(--accent);width:14px;height:14px;border-width:3px}
-.tl-ev-label{font-size:9px;color:var(--text2);white-space:nowrap;max-width:90px;overflow:hidden;text-overflow:ellipsis;text-align:center;margin:4px auto 0}
-.tl-ev-tip{display:none;position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;min-width:180px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:20;text-align:left}
-.timeline-event:hover .tl-ev-tip{display:block;animation:fadeIn .15s ease}
+.tl-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.timeline-title{font-size:13px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:8px}
+.tl-controls{display:flex;gap:6px;align-items:center}
+.tl-z-btn{background:var(--surface);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:inherit}
+.tl-z-btn:hover{border-color:var(--accent);color:var(--accent2);background:rgba(108,92,231,.08)}
+.tl-z-label{font-size:11px;color:var(--text3);min-width:48px;text-align:center;font-weight:600}
+.tl-z-btn.reset{width:auto;padding:0 12px;font-size:11px;font-weight:600}
+.tl-hint{font-size:10px;color:var(--text3);font-weight:400}
+.timeline-outer{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.timeline-scroll{overflow-x:auto;overflow-y:hidden;padding:0;scrollbar-width:thin;scrollbar-color:var(--accent) var(--surface2);position:relative}
+.timeline-scroll::-webkit-scrollbar{height:6px}
+.timeline-scroll::-webkit-scrollbar-track{background:var(--surface2)}
+.timeline-scroll::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+.timeline-canvas{position:relative;min-height:300px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+/* 시대 세그먼트 */
+.tl-seg{position:absolute;top:0;bottom:0;transition:opacity .3s}
+.tl-seg-bg{position:absolute;inset:0;opacity:.08;border-right:1px solid var(--border)}
+.tl-seg-name{position:absolute;top:12px;left:50%;transform:translateX(-50%);font-size:13px;font-weight:800;white-space:nowrap;transition:all .3s;letter-spacing:.5px}
+.tl-seg-years{position:absolute;top:30px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--text3);white-space:nowrap;font-weight:400}
+
+/* 메인 타임라인 라인 */
+.tl-main-line{position:absolute;top:50%;left:0;right:0;height:4px;transform:translateY(-50%);border-radius:2px;background:linear-gradient(90deg,transparent 0%,var(--accent) 5%,var(--accent) 95%,transparent 100%);opacity:.5}
+
+/* 시대 마커 (라인 위/아래) */
+.tl-marker{position:absolute;top:50%;transform:translate(-50%,-50%);cursor:pointer;z-index:5;transition:all .25s}
+.tl-marker:hover{transform:translate(-50%,-50%) scale(1.15);z-index:10}
+.tl-marker-dot{width:18px;height:18px;border-radius:50%;border:3px solid var(--bg);position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);transition:all .3s;box-shadow:0 2px 10px rgba(0,0,0,.4)}
+.tl-marker-dot.hl{animation:pulse 2s infinite;width:24px;height:24px;border-width:4px}
+.tl-marker-label{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;font-weight:700;transition:all .3s;pointer-events:none}
+.tl-marker.above .tl-marker-label{bottom:calc(100% + 10px)}
+.tl-marker.below .tl-marker-label{top:calc(100% + 10px)}
+.tl-marker-sub{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:10px;color:var(--text3);transition:all .3s;pointer-events:none}
+.tl-marker.above .tl-marker-sub{bottom:calc(100% + 28px)}
+.tl-marker.below .tl-marker-sub{top:calc(100% + 28px)}
+
+/* 이벤트 마커 */
+.tl-ev{position:absolute;top:50%;transform:translate(-50%,-50%);cursor:pointer;z-index:4;transition:all .25s}
+.tl-ev:hover{transform:translate(-50%,-50%) scale(1.4);z-index:12}
+.tl-ev-dot{width:10px;height:10px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 2px 6px rgba(0,0,0,.3);transition:all .3s}
+.tl-ev-dot.hl{background:var(--accent)!important;box-shadow:0 0 16px var(--accent);width:14px;height:14px;border-width:3px}
+.tl-ev-line{position:absolute;left:50%;width:1px;background:var(--border);transform:translateX(-50%);transition:all .3s}
+.tl-ev-label{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;font-weight:600;transition:all .3s;pointer-events:none}
+.tl-ev-year{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:10px;font-weight:700;transition:all .3s;pointer-events:none}
+.tl-ev-desc{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:10px;color:var(--text3);transition:all .3s;pointer-events:none;max-width:200px;overflow:hidden;text-overflow:ellipsis}
+
+/* 이벤트 툴팁 (호버) */
+.tl-ev-tip{display:none;position:absolute;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;min-width:180px;box-shadow:0 8px 32px rgba(0,0,0,.6);z-index:20;text-align:left;pointer-events:none}
+.tl-ev:hover .tl-ev-tip{display:block;animation:fadeIn .15s ease}
 .tl-ev-tip .tt-t{font-size:13px;font-weight:700;margin-bottom:4px}
 .tl-ev-tip .tt-y{font-size:11px;color:var(--accent2);margin-bottom:4px;font-weight:600}
 .tl-ev-tip .tt-d{font-size:11px;color:var(--text2);line-height:1.5}
 
+/* 결과 */
 .result-area{max-width:720px;margin:36px auto;padding:0 20px;position:relative;z-index:1}
 .result-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:20px;box-shadow:var(--shadow);animation:slideUp .4s ease}
 .result-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap}
@@ -103,25 +134,21 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .field-수학{background:var(--math)}.field-영어{background:var(--english)}.field-도덕{background:var(--ethics)}
 .field-음악{background:var(--music);color:#333}.field-미술{background:var(--art)}.field-체육{background:var(--pe);color:#333}
 .result-reading{font-size:15px;color:var(--text2);margin-top:-12px;margin-bottom:20px;font-weight:300}
-.result-section{margin-bottom:18px}
-.result-section:last-child{margin-bottom:0}
+.result-section{margin-bottom:18px}.result-section:last-child{margin-bottom:0}
 .section-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent2);margin-bottom:8px;display:flex;align-items:center;gap:7px}
-.section-content{font-size:14px;line-height:1.8;color:var(--text)}
-.section-content strong{color:var(--accent2);font-weight:600}
+.section-content{font-size:14px;line-height:1.8;color:var(--text)}.section-content strong{color:var(--accent2);font-weight:600}
 .hanja-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 20px;margin-top:6px}
 .hanja-char{font-size:30px;font-weight:900;display:inline-block;margin-right:16px;color:var(--korean)}
 .hanja-meaning{font-size:13px;color:var(--text2)}
 .result-tl{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;margin-top:6px}
-.result-tl .era{font-size:15px;font-weight:700}
-.result-tl .year{font-size:13px;color:var(--accent2);margin-left:8px}
+.result-tl .era{font-size:15px;font-weight:700}.result-tl .year{font-size:13px;color:var(--accent2);margin-left:8px}
 .ai-loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:32px;color:var(--text2);font-size:14px}
 .spinner-sm{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
 .not-found-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:36px;text-align:center;box-shadow:var(--shadow);animation:slideUp .4s ease}
 .not-found-card .emoji{font-size:48px;margin-bottom:16px}
-.not-found-card h3{font-size:18px;margin-bottom:8px}
-.not-found-card p{color:var(--text2);font-size:14px;line-height:1.7}
+.not-found-card h3{font-size:18px;margin-bottom:8px}.not-found-card p{color:var(--text2);font-size:14px;line-height:1.7}
 
-@media(max-width:600px){.header{padding:40px 20px 20px}.result-card{padding:24px 20px}.subject-pill{padding:7px 12px;font-size:12px}.timeline-event .tl-ev-tip{display:none!important}}
+@media(max-width:600px){.header{padding:40px 20px 20px}.result-card{padding:24px 20px}.subject-pill{padding:7px 12px;font-size:12px}.tl-ev-tip{display:none!important}.tl-seg-name{font-size:11px}.tl-marker-label{font-size:11px!important}.tl-ev-label{font-size:9px!important}}
 </style>
 </head>
 <body>
@@ -178,15 +205,21 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 
 <div class="timeline-section hidden" id="timelineSection">
-  <div class="timeline-title"><span>📅</span> 한국사 타임라인 <span style="font-size:10px;font-weight:400;color:var(--text3)">(Ctrl+휠 확대)</span></div>
-  <div class="timeline-controls">
-    <button class="tl-z-btn" onclick="tlZoom(-1)">−</button>
-    <span class="tl-z-label" id="tlZoomLabel">100%</span>
-    <button class="tl-z-btn" onclick="tlZoom(1)">+</button>
-    <button class="tl-z-btn" onclick="tlResetZoom()" style="width:auto;padding:0 10px;font-size:11px">리셋</button>
+  <div class="tl-header">
+    <div class="timeline-title"><span>📅</span> 한국사 타임라인 <span class="tl-hint">마우스 휠로 확대/축소</span></div>
+    <div class="tl-controls">
+      <button class="tl-z-btn" onclick="tlZoom(-1)">−</button>
+      <span class="tl-z-label" id="tlZoomLabel">100%</span>
+      <button class="tl-z-btn" onclick="tlZoom(1)">+</button>
+      <button class="tl-z-btn reset" onclick="tlResetZoom()">초기화</button>
+    </div>
   </div>
-  <div class="timeline-wrap" id="timelineWrap">
-    <div class="timeline-track" id="timelineTrack"><div class="timeline-line"></div></div>
+  <div class="timeline-outer">
+    <div class="timeline-scroll" id="timelineScroll">
+      <div class="timeline-canvas" id="timelineCanvas">
+        <div class="tl-main-line"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -194,55 +227,63 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <script>
 (function(){
-// === 데이터 ===
-var TL_ERAS=[
-  {id:'stone',name:'구석기',color:'#888',start:-500000,end:-8000},
-  {id:'neo',name:'신석기',color:'#a39',start:-8000,end:-2333},
-  {id:'gojoseon',name:'고조선',color:'#e74',start:-2333,end:-108},
-  {id:'samhan',name:'삼한',color:'#e90',start:-300,end:57},
-  {id:'goguryeo',name:'고구려 건국',color:'#e55',start:-18,end:668},
-  {id:'silla',name:'신라 건국',color:'#fd0',start:-57,end:935},
-  {id:'unified',name:'통일신라',color:'#a5e',start:676,end:935},
-  {id:'goryeo',name:'고려',color:'#0b8',start:918,end:1392},
-  {id:'joseon',name:'조선시대',color:'#3af',start:1392,end:1897},
-  {id:'daehan',name:'대한제국',color:'#c55',start:1897,end:1910},
-  {id:'colonial',name:'일제강점기',color:'#888',start:1910,end:1945},
-  {id:'modern',name:'대한민국',color:'#6c5',start:1948,end:2025}
+// ===== 한국사 데이터 =====
+var ERAS=[
+  {id:'stone',name:'구석기',color:'#7f8c8d',start:-500000,end:-8000,short:'旧石器'},
+  {id:'neo',name:'신석기',color:'#9b59b6',start:-8000,end:-2333,short:'新石器'},
+  {id:'gojoseon',name:'고조선',color:'#e67e22',start:-2333,end:-108,short:'古朝鮮'},
+  {id:'samhan',name:'삼한',color:'#f39c12',start:-300,end:57,short:'三韓'},
+  {id:'goguryeo',name:'고구려',color:'#e74c3c',start:-18,end:668,short:'高句麗'},
+  {id:'baekje',name:'백제',color:'#3498db',start:-18,end:660,short:'百濟'},
+  {id:'silla',name:'신라',color:'#f1c40f',start:-57,end:935,short:'新羅'},
+  {id:'unified',name:'통일신라',color:'#9b59b6',start:676,end:935,short:'統一新羅'},
+  {id:'goryeo',name:'고려',color:'#1abc9c',start:918,end:1392,short:'高麗'},
+  {id:'joseon',name:'조선',color:'#3498db',start:1392,end:1897,short:'朝鮮'},
+  {id:'daehan',name:'대한제국',color:'#c0392b',start:1897,end:1910,short:'大韓帝國'},
+  {id:'colonial',name:'일제강점기',color:'#7f8c8d',start:1910,end:1945,short:'日帝佔領'},
+  {id:'modern',name:'대한민국',color:'#27ae60',start:1948,end:2026,short:'大韓民國'}
 ];
-var TL_EVENTS=[
-  {name:'고조선 건국',year:-2333,era:'gojoseon',desc:'단군왕검이 건국'},
-  {name:'고구려 건국',year:-18,era:'goguryeo',desc:'주몽이 건국'},
-  {name:'백제 건국',year:-18,era:'goguryeo',desc:'온조왕이 건국'},
-  {name:'신라 건국',year:-57,era:'silla',desc:'박혁거세가 건국'},
-  {name:'삼국통일',year:676,era:'unified',desc:'신라가 삼국을 통일'},
-  {name:'화백제도',year:649,era:'silla',desc:'신라의 합의제 통치'},
-  {name:'진대법 실시',year:838,era:'unified',desc:'신라의 곡식 구휼 제도'},
-  {name:'고려 건국',year:918,era:'goryeo',desc:'왕건이 건국'},
-  {name:'광종 과거제',year:958,era:'goryeo',desc:'중국식 과거제 도입'},
-  {name:'감찰서 도입',year:983,era:'goryeo',desc:'지방 행정 제도'},
-  {name:'팔만대장경',year:1251,era:'goryeo',desc:'세계 최고 금속활자본'},
-  {name:'공민왕 개혁',year:1356,era:'goryeo',desc:'고려 후기 개혁'},
-  {name:'조선 건국',year:1392,era:'joseon',desc:'이성계가 건국'},
-  {name:'세종 문화',year:1418,era:'joseon',desc:'훈민정음 창제 등'},
-  {name:'임진왜란',year:1592,era:'joseon',desc:'일본의 침입'},
+var EVENTS=[
+  {name:'단군건국',year:-2333,era:'gojoseon',desc:'단군왕검이 고조선 건국'},
+  {name:'위만건국',year:-194,era:'gojoseon',desc:'위만이 고조선 건국'},
+  {name:'한사군',year:-108,era:'gojoseon',desc:'한나라가 고조선을 멸망'},
+  {name:'고구려건국',year:-18,era:'goguryeo',desc:'추모(주몽)가 건국'},
+  {name:'백제건국',year:-18,era:'baekje',desc:'온조왕이 건국'},
+  {name:'신라건국',year:-57,era:'silla',desc:'박혁거세가 건국'},
+  {name:'전한-setup',year:-18,era:'gojoseon',desc:'한사군 설치'},
+  {name:'삼국시대',year:300,era:'goguryeo',desc:'고구려·백제·신라 경쟁'},
+  {name:'기독교전도',year:4,era:'silla',desc:'미്ട 파서 전도'},
+  {name:'광개토태왕',year:391,era:'goguryeo',desc:'영토 확장 전성기'},
+  {name:'삼국통일',year:676,era:'unified',desc:'신라가 삼국 통일'},
+  {name:'화백제도',year:649,era:'silla',desc:'신라 합의제 통치'},
+  {name:'진대법',year:838,era:'unified',desc:'곡식 구휼 제도 실시'},
+  {name:'후삼국',year:892,era:'goryeo',desc:'후백제·후고구려·신라'},
+  {name:'고려건국',year:918,era:'goryeo',desc:'왕건이 고려 건국'},
+  {name:'과거제시행',year:958,era:'goryeo',desc:'광종, 중국식 과거제'},
+  {name:'팔만대장경',year:1251,era:'goryeo',desc:'세계 최대 금속활자본'},
+  {name:'공민왕개혁',year:1356,era:'goryeo',desc:'고려 후기 개혁'},
+  {name:'조선건국',year:1392,era:'joseon',desc:'이성계가 조선 건국'},
+  {name:'훈민정음',year:1446,era:'joseon',desc:'세종, 한글 창제'},
+  {name:'임진왜란',year:1592,era:'joseon',desc:'일본의 침입 (1592-1598)'},
   {name:'병자호란',year:1636,era:'joseon',desc:'청나라의 침입'},
   {name:'을사조약',year:1905,era:'daehan',desc:'일제의 강제 조약'},
-  {name:'3·1운동',year:1919,era:'colonial',desc:'독립운동'},
-  {name:'대한민국 수립',year:1948,era:'modern',desc:'정부 수립'}
+  {name:'3·1운동',year:1919,era:'colonial',desc:'전국적 독립운동'},
+  {name:'대한민국수립',year:1948,era:'modern',desc:'정부 수립'},
+  {name:'6·25전쟁',year:1950,era:'modern',desc:'한국전쟁 (1950-1953)'},
+  {name:'민주화',year:1987,era:'modern',desc:'6월민주항쟁'}
 ];
-var TL_BASE=-510000,TL_SPAN=530000;
 
-// === 상태 ===
+// ===== 상태 =====
 var currentField='all',highlightTerm=null,tlZoomLvl=1;
+var BASE_W=1000;
 var si=document.getElementById('searchInput'),se=document.getElementById('suggestions'),ra=document.getElementById('resultArea');
 
-// === 유틸 ===
+// ===== 유틸 =====
 function esc(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
-// === 설정 ===
+// ===== 설정 =====
 window.toggleSettings=function(){
-  var ov=document.getElementById('settingsOverlay');
-  ov.classList.toggle('active');
+  var ov=document.getElementById('settingsOverlay');ov.classList.toggle('active');
   if(ov.classList.contains('active')){
     var k=localStorage.getItem('oaiKey')||'';
     document.getElementById('oaiKeyInput').value=k;
@@ -254,8 +295,7 @@ window.saveSettings=function(){
   if(!v){showKS('API 키를 입력해주세요.','err');return}
   if(!v.startsWith('sk-or-')&&!v.startsWith('sk-')){showKS('키는 sk-로 시작해야 합니다.','err');return}
   if(v.length<10){showKS('키가 너무 짧습니다.','err');return}
-  localStorage.setItem('oaiKey',v);
-  showKS('✅ 저장 완료!','ok');
+  localStorage.setItem('oaiKey',v);showKS('✅ 저장 완료!','ok');
   setTimeout(function(){toggleSettings()},1200);
 };
 function showKS(msg,type){
@@ -263,35 +303,30 @@ function showKS(msg,type){
   s.style.background=type==='ok'?'rgba(0,206,201,.08)':'rgba(255,107,107,.08)';
   s.style.color=type==='ok'?'var(--positive)':'var(--negative)';
   s.style.border='1px solid '+(type==='ok'?'rgba(0,206,201,.2)':'rgba(255,107,107,.2)');
-  s.style.borderRadius='var(--radius-sm)';
-  s.style.padding='10px 14px';s.style.fontSize='13px';
+  s.style.borderRadius='var(--radius-sm)';s.style.padding='10px 14px';s.style.fontSize='13px';
 }
-function getOaiKey(){return localStorage.getItem('oaiKey')?true:false}
 
-// === 과목 선택 ===
+// ===== 과목 선택 =====
 document.querySelectorAll('.subject-pill').forEach(function(p){
   p.addEventListener('click',function(){
     document.querySelectorAll('.subject-pill').forEach(function(x){x.classList.remove('active')});
-    p.classList.add('active');
-    currentField=p.getAttribute('data-field');
+    p.classList.add('active');currentField=p.getAttribute('data-field');
     document.getElementById('timelineSection').classList.add('hidden');
   });
 });
 
-// === 검색 ===
+// ===== 검색 =====
 document.getElementById('searchBtn').addEventListener('click',function(){doSearch()});
 si.addEventListener('keydown',function(e){if(e.key==='Enter'){doSearch();se.classList.remove('show')}});
 document.addEventListener('click',function(e){if(!e.target.closest('.search-container'))se.classList.remove('show')});
-
 function doSearch(){
-  var q=si.value.trim();if(!q)return;
-  se.classList.remove('show');
+  var q=si.value.trim();if(!q)return;se.classList.remove('show');
   document.getElementById('welcomeSection').style.display='none';
   document.getElementById('timelineSection').classList.add('hidden');
   aiSearch(q);
 }
 
-// === 추천 검색어 ===
+// ===== 추천 검색어 =====
 var examples=[
   {term:'진대법',field:'역사'},{term:'뷰렛반응',field:'과학'},{term:'삼강행실도',field:'역사'},
   {term:'이차방정식',field:'수학'},{term:'비유',field:'국어'},{term:'칸트의 의무론',field:'도덕'},
@@ -304,52 +339,180 @@ examples.forEach(function(ex){
   var b=document.createElement('button');b.className='example-tag';
   var fc=ex.field==='역사'?'var(--history)':ex.field==='과학'?'var(--science)':ex.field==='국어'?'var(--korean)':ex.field==='수학'?'var(--math)':ex.field==='영어'?'var(--english)':ex.field==='음악'?'var(--music)':ex.field==='미술'?'var(--art)':ex.field==='체육'?'var(--pe)':'var(--ethics)';
   b.innerHTML=esc(ex.term)+' <span style="font-size:10px;padding:2px 6px;border-radius:8px;font-weight:600;background:'+fc+'22;color:'+fc+'">'+esc(ex.field)+'</span>';
-  b.addEventListener('click',function(){si.value=ex.term;doSearch()});
-  et.appendChild(b);
+  b.addEventListener('click',function(){si.value=ex.term;doSearch()});et.appendChild(b);
 });
 
-// === 타임라인 ===
+// ===== 타임라인 렌더링 =====
 function renderTimeline(){
-  var track=document.getElementById('timelineTrack');
-  track.querySelectorAll('.timeline-era,.timeline-event').forEach(function(e){e.remove()});
-  var pad=60,segW=(track.clientWidth||800-pad*2)/TL_ERAS.length;
-  TL_ERAS.forEach(function(era,i){
-    var x=pad+i*segW+segW/2;
+  var canvas=document.getElementById('timelineCanvas');
+  // 기존 마커 제거
+  canvas.querySelectorAll('.tl-seg,.tl-ev,.tl-marker').forEach(function(e){e.remove()});
+
+  var totalSpan=ERAS[ERAS.length-1].end-ERAS[0].start;
+  var w=Math.max(canvas.clientWidth||1000, BASE_W*tlZoomLvl);
+  canvas.style.width=w+'px';
+
+  var PAD=40;
+  var usableW=w-PAD*2;
+
+  // === 시대 세그먼트 ===
+  ERAS.forEach(function(era){
+    var x1=PAD+((era.start-ERAS[0].start)/totalSpan)*usableW;
+    var x2=PAD+((era.end-ERAS[0].start)/totalSpan)*usableW;
+    var segW=x2-x1;
+
+    var seg=document.createElement('div');seg.className='tl-seg';
+    seg.style.left=x1+'px';seg.style.width=segW+'px';
+
+    var bg=document.createElement('div');bg.className='tl-seg-bg';bg.style.background=era.color;
+    seg.appendChild(bg);
+
     var isHL=highlightTerm&&highlightTerm.tlEra&&era.name.indexOf(highlightTerm.tlEra)!==-1;
-    var above=i%2===0;
-    var el=document.createElement('div');el.className='timeline-era';
+
+    // 시대 이름 (확대 수준에 따라 크기 조절)
+    var nameEl=document.createElement('div');nameEl.className='tl-seg-name';
+    nameEl.style.color=isHL?era.color:'var(--text2)';
+    if(isHL){nameEl.style.textShadow='0 0 12px '+era.color+'88'}
+    var nameSize=Math.max(11,Math.min(15,10+tlZoomLvl*2));
+    nameEl.style.fontSize=nameSize+'px';
+    nameEl.textContent=tlZoomLvl>=1.5?era.name:era.short||era.name;
+    seg.appendChild(nameEl);
+
+    // 연도 (확대 시에만 표시)
+    if(tlZoomLvl>=1.2){
+      var yearEl=document.createElement('div');yearEl.className='tl-seg-years';
+      yearEl.textContent=era.start.toLocaleString()+' ~ '+era.end.toLocaleString();
+      yearEl.style.opacity=Math.min(1,(tlZoomLvl-1.2)/0.8);
+      seg.appendChild(yearEl);
+    }
+
+    // 시대 마커 (라인 위/아래 번갈아)
+    var marker=document.createElement('div');marker.className='tl-marker '+(ERAS.indexOf(era)%2===0?'above':'below');
+    marker.style.left=(x1+segW/2)+'px';
+    var dot=document.createElement('div');dot.className='tl-marker-dot'+(isHL?' hl':'');
+    dot.style.background=era.color;marker.appendChild(dot);
+
+    // 마커 라벨 (확대 수준에 따라 표시)
+    if(tlZoomLvl>=1){
+      var lbl=document.createElement('div');lbl.className='tl-marker-label';
+      var lblSize=Math.max(10,Math.min(14,9+tlZoomLvl*1.5));
+      lbl.style.fontSize=lblSize+'px';
+      lbl.style.color=isHL?era.color:'var(--text3)';
+      lbl.textContent=era.name;
+      marker.appendChild(lbl);
+    }
+
+    canvas.appendChild(seg);canvas.appendChild(marker);
+  });
+
+  // === 이벤트 마커 ===
+  var evPositions=[]; // 충돌 방지용
+
+  EVENTS.forEach(function(ev){
+    var x=PAD+((ev.year-ERAS[0].start)/totalSpan)*usableW;
+    var eraIdx=ERAS.findIndex(function(e){return e.id===ev.era});
+    if(eraIdx<0)return;
+
+    // 줌 레벨별 표시 필터링
+    if(tlZoomLvl<1.2&&ERAS.length>5)return; // 100%일 때는 큰 이벤트만
+    if(tlZoomLvl<1.5&&Math.abs(ev.year)>1000&&Math.abs(ev.year)<500)return; // 중간 이벤트
+    if(tlZoomLvl<2&&ev.name.length>8)return; // 이름 긴 이벤트
+
+    var above=eraIdx%2===0;
+    var el=document.createElement('div');el.className='tl-ev';
     el.style.left=x+'px';
-    var dotTop=above?'20px':'auto',dotBot=above?'auto':'20px';
-    var lblTop=above?'auto':'0',lblBot=above?'0':'auto';
-    el.innerHTML='<div class="tl-era-dot'+(isHL?' hl':'')+'" style="background:'+era.color+';top:'+dotTop+';bottom:'+dotBot+'"></div>'
-      +'<div class="tl-era-label" style="color:'+(isHL?'var(--accent2)':'var(--text2)')+(above?'':'margin-top:12px;margin-bottom:0')+'">'+esc(era.name)+'</div>'
-      +'<div class="tl-era-years" style="top:'+lblTop+';bottom:'+lblBot+'">'+era.start.toLocaleString()+'~'+era.end.toLocaleString()+'</div>';
-    el.addEventListener('click',function(){si.value=era.name;doSearch();ra.scrollIntoView({behavior:'smooth',block:'start'})});
-    track.appendChild(el);
+
+    var isEvHL=highlightTerm&&highlightTerm.tlEra&&(ev.name===highlightTerm||ev.name.indexOf(highlightTerm)!==-1);
+
+    // 이벤트 점
+    var dot=document.createElement('div');dot.className='tl-ev-dot'+(isEvHL?' hl':'');
+    dot.style.background=ERAS[eraIdx]?(isEvHL?'var(--accent)':ERAS[eraIdx].color):'var(--history)';
+    el.appendChild(dot);
+
+    // 연결선 (확대 시)
+    if(tlZoomLvl>=1.5){
+      var line=document.createElement('div');line.className='tl-ev-line';
+      line.style.top=above?'-30px':'10px';
+      line.style.height='20px';
+      line.style.opacity=Math.min(1,(tlZoomLvl-1.5)/1);
+      el.appendChild(line);
+    }
+
+    // 이벤트 라벨 (확대 수준에 따라)
+    if(tlZoomLvl>=1.5){
+      var labelY=above?-36:36;
+      // 충돌 방지: 같은 x 좌표 근처에 라벨이 있으면 위치 조정
+      var adjusted=false;
+      for(var i=0;i<evPositions.length;i++){
+        if(Math.abs(evPositions[i].x-x)<40&&evPositions[i].above===above){
+          labelY+=above?-18:18;adjusted=true;
+        }
+      }
+      evPositions.push({x:x,above:above,y:labelY});
+
+      var lbl=document.createElement('div');lbl.className='tl-ev-label';
+      lbl.style.top=(labelY<0?labelY:labelY)+'px';
+      lbl.style.fontSize=Math.max(10,Math.min(13,9+tlZoomLvl))+'px';
+      lbl.style.color=isEvHL?'var(--accent2)':'var(--text2)';
+      lbl.textContent=ev.name;
+      el.appendChild(lbl);
+
+      // 연도 (확대 시에만)
+      if(tlZoomLvl>=2){
+        var yr=document.createElement('div');yr.className='tl-ev-year';
+        yr.style.top=(labelY+(above?-14:16))+'px';
+        yr.style.color=ERAS[eraIdx]?ERAS[eraIdx].color:'var(--text3)';
+        yr.textContent=ev.year.toLocaleString()+'년';
+        el.appendChild(yr);
+      }
+
+      // 설명 (매우 확대 시)
+      if(tlZoomLvl>=3&&ev.desc){
+        var desc=document.createElement('div');desc.className='tl-ev-desc';
+        desc.style.top=(labelY+(above?-28:30))+'px';
+        desc.textContent=ev.desc;
+        el.appendChild(desc);
+      }
+    }
+
+    // 툴팁
+    var tip=document.createElement('div');tip.className='tl-ev-tip';
+    tip.style.bottom=above?'calc(100% + 40px)':'auto';
+    tip.style.top=above?'auto':'calc(100% + 40px)';
+    tip.innerHTML='<div class="tt-t">'+esc(ev.name)+'</div><div class="tt-y">'+ev.year.toLocaleString()+'년</div><div class="tt-d">'+esc(ev.desc)+'</div>';
+    el.appendChild(tip);
+
+    canvas.appendChild(el);
   });
-  TL_EVENTS.forEach(function(ev){
-    var eIdx=TL_ERAS.findIndex(function(e){return e.id===ev.era});
-    if(eIdx<0)return;
-    var x=pad+eIdx*segW+segW/2+((ev.year-TL_ERAS[eIdx].start)/(TL_ERAS[eIdx].end-TL_ERAS[eIdx].start)-0.5)*segW*0.7;
-    var above=TL_ERAS.indexOf(TL_ERAS[eIdx])%2===0;
-    var el=document.createElement('div');el.className='timeline-event';
-    el.style.left=x+'px';el.style.top=above?'35%':'65%';
-    var isEvHL=highlightTerm&&highlightTerm.tlEra&&ev.name.indexOf(highlightTerm)!==-1;
-    el.innerHTML='<div class="tl-ev-dot'+(isEvHL?' hl':'')+'"></div><div class="tl-ev-label">'+esc(ev.name)+'</div>'
-      +'<div class="tl-ev-tip"><div class="tt-t">'+esc(ev.name)+'</div><div class="tt-y">'+ev.year.toLocaleString()+'년</div><div class="tt-d">'+esc(ev.desc)+'</div></div>';
-    el.addEventListener('click',function(){si.value=ev.name;doSearch();ra.scrollIntoView({behavior:'smooth',block:'start'})});
-    track.appendChild(el);
-  });
+
+  // 하이라이트된 시대로 자동 스크롤
   if(highlightTerm&&highlightTerm.tlEra){
-    var eIdx=TL_ERAS.findIndex(function(e){return highlightTerm.tlEra&&e.name.indexOf(highlightTerm.tlEra)!==-1});
-    if(eIdx>=0){var x=pad+eIdx*segW+segW/2;document.getElementById('timelineWrap').scrollTo({left:Math.max(0,x-document.getElementById('timelineWrap').clientWidth/2),behavior:'smooth'})}
+    var hlEraIdx=ERAS.findIndex(function(e){return highlightTerm.tlEra&&e.name.indexOf(highlightTerm.tlEra)!==-1});
+    if(hlEraIdx>=0){
+      var hlX=PAD+((ERAS[hlEraIdx].start-ERAS[0].start)/totalSpan)*usableW;
+      var hlX2=PAD+((ERAS[hlEraIdx].end-ERAS[0].start)/totalSpan)*usableW;
+      var scrollTo=hlX+(hlX2-hlX)/2-(document.getElementById('timelineScroll').clientWidth/2);
+      document.getElementById('timelineScroll').scrollTo({left:Math.max(0,scrollTo),behavior:'smooth'});
+    }
   }
 }
-window.tlZoom=function(d){tlZoomLvl=d>0?Math.min(tlZoomLvl*1.3,5):Math.max(tlZoomLvl/1.3,0.5);document.getElementById('timelineTrack').style.width=(100*tlZoomLvl)+'%';document.getElementById('tlZoomLabel').textContent=Math.round(tlZoomLvl*100)+'%'};
-window.tlResetZoom=function(){tlZoomLvl=1;document.getElementById('timelineTrack').style.width='100%';document.getElementById('tlZoomLabel').textContent='100%';document.getElementById('timelineWrap').scrollTo({left:0,behavior:'smooth'})};
-document.getElementById('timelineWrap').addEventListener('wheel',function(e){if(e.ctrlKey||e.metaKey){e.preventDefault();e.deltaY<0?tlZoom(1):tlZoom(-1)}},{passive:false});
 
-// === AI 카드 렌더링 ===
+// ===== 줌 컨트롤 =====
+window.tlZoom=function(d){
+  tlZoomLvl=d>0?Math.min(tlZoomLvl*1.4,8):Math.max(tlZoomLvl/1.4,0.5);
+  document.getElementById('tlZoomLabel').textContent=Math.round(tlZoomLvl*100)+'%';
+  renderTimeline();
+};
+window.tlResetZoom=function(){
+  tlZoomLvl=1;document.getElementById('tlZoomLabel').textContent='100%';
+  document.getElementById('timelineScroll').scrollTo({left:0,behavior:'smooth'});
+  renderTimeline();
+};
+document.getElementById('timelineScroll').addEventListener('wheel',function(e){
+  if(e.ctrlKey||e.metaKey){e.preventDefault();e.deltaY<0?tlZoom(1):tlZoom(-1)}
+},{passive:false});
+
+// ===== AI 카드 렌더링 =====
 function renderAICard(item){
   var h='<div class="result-card" style="border-left:3px solid var(--accent)">';
   h+='<div class="result-header"><span class="result-term">'+esc(item.name)+'</span><span class="result-field field-'+esc(item.field||'')+'">'+esc(item.field||'')+'</span>';
@@ -372,29 +535,24 @@ function renderAICard(item){
   h+='</div>';return h;
 }
 
-// === AI 검색 ===
+// ===== AI 검색 =====
 window.aiSearch=async function(query){
-  var key=getOaiKey();
+  var key=localStorage.getItem('oaiKey');
   if(!key){ra.innerHTML='<div class="not-found-card"><div class="emoji">🔑</div><h3>API 키가 필요합니다</h3><p>⚙️ 설정에서 OpenRouter API 키를 입력해주세요<br><a href="https://openrouter.ai/keys" style="color:var(--accent2)">openrouter.ai/keys</a>에서 무료 발급 가능</p></div>';return}
   ra.innerHTML='<div class="ai-loading"><div class="spinner-sm"></div>AI가 "'+esc(query)+'"를 분석하고 있습니다...</div>';
   try{
     var prompt='당신은 중고등학생을 위한 친절한 학습 선생님입니다. 아래 단어에 대해 학생이 이해하기 쉽게 설명해주세요.\n\n단어: '+query+'\n\nJSON으로만 응답. 필드: field, reading, meaning, description, keyPoints(배열3개이상), commonMistakes(배열2개이상), memoryTip, relatedTopics(배열2개이상), importance, examTip, realLife, funFact, difficulty(상중하), grade(학년학기), hanja(배열), tlEra, tlYear';
     var res=await fetch('https://openrouter.ai/api/v1/chat/completions',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('oaiKey')},
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
       body:JSON.stringify({model:'openai/gpt-4o-mini',messages:[{role:'system',content:'학습 사전 전문가. JSON으로만 응답. 한국어.'},{role:'user',content:prompt}],temperature:0.3,max_tokens:3000})
     });
     if(!res.ok){var err=await res.json().catch(function(){return{}});throw new Error(err&&err.error?err.error.message:'API 오류 ('+res.status+')')}
-    var data=await res.json();
-    var content=data.choices[0].message.content;
-    var jsonMatch=content.match(/\{[\s\S]*\}/);
-    if(!jsonMatch)throw new Error('JSON 파싱 실패');
-    var ai=JSON.parse(jsonMatch[0]);
-    ai.name=query;
+    var data=await res.json();var content=data.choices[0].message.content;
+    var jsonMatch=content.match(/\{[\s\S]*\}/);if(!jsonMatch)throw new Error('JSON 파싱 실패');
+    var ai=JSON.parse(jsonMatch[0]);ai.name=query;
     highlightTerm=ai.tlEra?ai:null;
     if(ai.tlEra)document.getElementById('timelineSection').classList.remove('hidden');
-    ra.innerHTML=renderAICard(ai);
-    renderTimeline();
+    ra.innerHTML=renderAICard(ai);renderTimeline();
   }catch(e){
     ra.innerHTML='<div class="not-found-card"><div class="emoji">❌</div><h3>AI 분석 실패</h3><p>'+esc(e.message)+'</p><p style="margin-top:10px;font-size:12px;color:var(--text3)">API 키를 확인하거나 다시 시도해주세요</p></div>';
   }
