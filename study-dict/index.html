@@ -208,7 +208,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
 
 <div class="quick-tags" id="quickTags"></div>
 
-<div class="timeline-section" id="timelineSection">
+<div class="timeline-section hidden" id="timelineSection">
   <div class="timeline-title"><span>📅</span> 한국사 타임라인 <span style="font-size:10px;font-weight:400;color:var(--text3)">(Ctrl+휠 확대)</span></div>
   <div class="timeline-controls">
     <button class="tl-z-btn" onclick="tlZoom(-1)">−</button>
@@ -225,135 +225,44 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
 <div class="result-area" id="resultArea"></div>
 
 <script>
-var KB=[
-{name:"진대법",field:"역사",reading:"진대법(賑貸法)",hanja:[{char:"賑",meaning:"구휼할 진 - 어려운 사람을 구제하다"},{char:"貸",meaning:"빌릴 대 - 빌려주다"},{char:"法",meaning:"법 법 - 제도"}],meaning:"신라가 기근이 든 백성들에게 국가 곡식을 빌려주고, 해가 풀린 뒤 갚게 한 구휼 제도.",description:"진대법은 신라가 기근이나 재해로 고통받는 백성들에게 국가가 보관하고 있던 곡식을 빌려주고, 다음 해에 원수로 갚게 하거나 이자를 붙여 갚게 한 구휼 제도입니다. 흥덕왕 3년(838년)에 처음 실시되었다고 기록되어 있습니다.",importance:"신라가 백성의 생활을 보살폈다는 증거이며, 이후 고려/조선시대의 의창, 상평창 등 곡식 비축 제도로 이어졌습니다. 국사 시험에서 신라의 사회/경제 정책을 다룰 때 자주 출제됩니다.",tlEra:"통일신라",tlYear:"838년",examTip:"신라의 사회 정책, 구휼 제도로 자주 출제. 진대법=신라+곡식 빌려주기로 기억!"},
-{name:"화폐경제",field:"역사",reading:"화폐경제(貨幣經濟)",hanja:[{char:"貨",meaning:"물건 화 - 재화"},{char:"幣",meaning:"비단 폐 - 엽전"},{char:"經",meaning:"벼리 경 - 다스리다"},{char:"濟",meaning:"건널 제 - 이루다"}],meaning:"상품과 서비스의 교환이 화폐를 통해 이루어지는 경제 체계.",description:"화폐경제란 실물이 아닌 엽전/지폐 등의 화폐를 매개로 거래가 이루어지는 경제 형태를 말합니다. 조선 후기 서민 경제가 발전하면서 상평통보 등의 화폐가 널리 유통되었습니다.",importance:"조선 후기의 상업 발전과 함께 화폐 유통이 확대되었으며, 실학파 경제 사상의 배경이 됩니다.",tlEra:"고려~조선시대",tlYear:"12~19세기",examTip:"조선 후기 상업 발전과 연결. 상평통보, 주화가 핵심 키워드."},
-{name:"삼강행실도",field:"역사",reading:"삼강행실도(三綱行實圖)",hanja:[{char:"三",meaning:"셋 삼"},{char:"綱",meaning:"벼리 강"},{char:"行",meaning:"행할 행"},{char:"實",meaning:"실 실"},{char:"圖",meaning:"그림 도"}],meaning:"유교적 삼강의 도덕을 그림과 글로 설명한 조선시대 교양서.",description:"세종 16년(1434년)에 편찬된 것으로, 왕과 신하, 아버지와 아들, 남편과 아내라는 유교의 3대 도덕 규범을 본보기와 그림으로 설명한 책입니다.",importance:"조선시대의 유교 통치 이념과 백성 교육을 보여주는 대표 자료입니다.",tlEra:"조선시대",tlYear:"1434년",examTip:"세종의 문화 사업으로 자주 출제. 성리학 + 유교 통치 이념과 연결."},
-{name:"과전법",field:"역사",reading:"과전법(科田法)",hanja:[{char:"科",meaning:"과할 과"},{char:"田",meaning:"밭 전"},{char:"法",meaning:"법 법"}],meaning:"고려말 공민왕이 실시한 과거 급제자에게 토지를 분급하는 토지 제도.",description:"공민왕 5년(1356년)에 실시된 토지 제도로, 과거에 급제한 관리에게 일정 기간 토지를 지급하여 생활을 보장하고 세금을 거두는 제도입니다.",importance:"고려 후기 토지 제도 개혁의 핵심이며, 조선 건국 후 토지 정책으로 이어집니다.",tlEra:"고려",tlYear:"1356년",examTip:"공민왕 + 고려 후기 개혁으로 연결."},
-{name:"을사조약",field:"역사",reading:"을사조약(乙巳條約)",hanja:[{char:"乙",meaning:"없을 을"},{char:"巳",meaning:"뱀 사"},{char:"條",meaning:"조항 조"},{char:"約",meaning:"맺을 약"}],meaning:"1905년 일본이 강제로 맺은 조약으로, 한국의 외교권을 박탈한 불평등 조약.",description:"1905년(을사년) 11월 17일, 일본이 한국의 외교권을 빼앗은 조약입니다. 을사5적이 강제로 날인하였습니다.",importance:"한국의 주권 상실 과정에서 핵심 사건입니다.",tlEra:"대한제국",tlYear:"1905년",examTip:"을사5적, 한일병합과 함께 근현대사 핵심."},
-{name:"계유정난",field:"역사",reading:"계유정난(癸酉靖難)",hanja:[{char:"癸",meaning:"계해 계"},{char:"酉",meaning:"병유 유"},{char:"靖",meaning:"가질 정"},{char:"難",meaning:"어려울 난"}],meaning:"1453년 수양대군이 조카 단종의 측근들을 제거하고 권력을 장악한 사건.",description:"1453년 수양대군이 황보확/김종서 등 단종의 측근들을 제거하고 실권을 장악한 사건입니다.",importance:"조선 전기의 왕위 계승 과정에서 가장 중요한 사건 중 하나입니다.",tlEra:"조선시대",tlYear:"1453년",examTip:"세조의 왕위 찬탈 과정. 사육신/단종과 함께 출제."},
-{name:"동학농민운동",field:"역사",reading:"동학농민운동(東學農民運動)",hanja:[{char:"東",meaning:"동녘 동"},{char:"學",meaning:"배울 학"},{char:"農",meaning:"농부 농"},{char:"民",meaning:"백성 민"}],meaning:"1894년 동학을 기반으로 봉기한 농민들의 반일/개혁 운동.",description:"1894년 동학 농민군이 전라도에서 봉기하여 부패한 관리를 타도하고 개혁을 요구한 운동입니다.",importance:"근대 한국사의 전환점으로, 동학/농민운동/갑오개혁/일본 개입 등이 함께 시험에 자주 출제됩니다.",tlEra:"조선시대",tlYear:"1894년",examTip:"동학농민운동-갑오개혁-을미사변-을사조약 흐름을 기억!"},
-{name:"뷰렛반응",field:"과학",reading:"비우레 반응 (Biuret reaction)",hanja:null,meaning:"단백질(펩타이드 결합)이 있는 시료에 뷰렛 시약을 넣으면 보라색으로 변하는 반응.",description:"뷰렛 반응은 펩타이드 결합이 포함된 물질에 황산구리와 수산화나트륨으로 만든 뷰렛 시약을 가하면 보라색 착물을 형성하는 반응입니다.",importance:"생물학에서 단백질의 존재를 확인하는 기본 실험으로 자주 출제됩니다.",practicalUse:"식품 단백질 함량 검사, 임상 소변 단백질 검사, 실험실 단백질 정량 분석 등에 사용.",examTip:"단백질=뷰렛반응(보라색), 지방=거짓포드(주황), 전분=요오드(남색)!"},
-{name:"거짓포드반응",field:"과학",reading:"거짓포드 반응",hanja:null,meaning:"지방이 있는 시료에 시약을 넣으면 주황색으로 변하는 반응.",description:"불포화 지방산에 글레이스아세트산과 황산을 가하면 적색~주황색으로 변하는 반응입니다.",importance:"생물학에서 지방의 존재를 확인하는 기본 실험입니다.",practicalUse:"식품의 지방 함량 분석, 세포막의 지질 구성 분석 등에 활용.",examTip:"지방 검출 = 거짓포드 반응(주황색). 불포화 지방산에서만 나타남!"},
-{name:"요오드반응",field:"과학",reading:"전분 검출 반응",hanja:null,meaning:"전분에 요오드 용액을 넣으면 남색으로 변하는 반응.",description:"요오드 분자가 전분의 아밀로오스 나선 구조 안으로 들어가 남색으로 변합니다.",importance:"생물학에서 전분의 존재를 확인하는 가장 기본적인 실험입니다.",practicalUse:"식품의 전분 함량 검사, 식물 세포 관찰, 종자 발아 상태 확인 등에 사용.",examTip:"전분=요오드 반응(남색). 3대 영양소 검출 실험의 하나!"},
-{name:"현미경",field:"과학",reading:"현미경(顯微鏡)",hanja:[{char:"顯",meaning:"나타날 현"},{char:"微",meaning:"작을 미"},{char:"鏡",meaning:"거울 경"}],meaning:"렌즈를 이용하여 작은 물체를 크게 확대하여 관찰하는 기구.",description:"두 개 이상의 렌즈를 조합하여 작은 물체를 확대하는 광학 기기입니다. 배율 = 대물렌즈 × 대안렌즈.",importance:"세포 관찰, 미생물 관찰 등 생물학 실험의 기본 도구입니다.",practicalUse:"의학 진단, 세포 생물학 연구, 재료 분석, 법의학적 분석 등.",examTip:"배율 = 대물렌즈 × 대안렌즈. 와류 현상 조심!"},
-{name:"부력",field:"과학",reading:"부력(浮力)",hanja:[{char:"浮",meaning:"떠浮"},{char:"力",meaning:"힘 力"}],meaning:"물속에 잠긴 물체에 위쪽으로 작용하는 힘.",description:"아르키메데스의 원리에 따라, 그 크기는 물체가 차지하는 액체의 무게와 같습니다. F = ρ × V × g",importance:"물리학의 기본 개념으로, 밀도와 힘의 평형 문제와 연결됩니다.",practicalUse:"배의 설계, 잠수함, 기구 비행, 유체 역학 공학 등.",examTip:"F = ρ(밀도) × V(부피) × g(중력가속도). 아르키메데스 원리!"},
-{name:"오르사트반응",field:"과학",reading:"오르사트 분석 (Orsat analysis)",hanja:null,meaning:"가스의 부피 변화를 측정하여 조성을 분석하는 실험.",description:"연소 가스의 CO2, O2, CO 등의 부피를 흡수제로 순차적으로 흡수시켜 측정합니다.",importance:"연소 효율, 배기가스 분석 등 실생활과 직결되는 과학 실험입니다.",practicalUse:"보일러 효율 측정, 배기가스 환경 검사, 공장 굴뚝 배출량 분석 등.",examTip:"가스의 부피 변화를 이용한 정량 분석 실험!"},
-{name:"화학평형",field:"과학",reading:"화학 평형(化學平衡)",hanja:[{char:"化",meaning:"바꿀 화"},{char:"學",meaning:"배울 학"},{char:"平",meaning:"평할 평"},{char:"衡",meaning:"저울 균"}],meaning:"정반응과 역반응의 속도가 같아져 농도가 변하지 않는 상태.",description:"르샤트리에의 원리에 따라 외부 변화에 대응하여 평형이 이동합니다.",importance:"화학의 핵심 개념으로, 평형 상수와 이동 계산이 시험의 단골 출제 항목입니다.",practicalUse:"합성 공정, 암모니아 합성, 배기가스 처리 등 산업 전반.",examTip:"르샤트리에의 원리: 온도/농도/압력 변화에 대한 평형 이동 필수 숙지!"},
-{name:"빛의굴절",field:"과학",reading:"빛의 굴절(屈折)",hanja:[{char:"屈",meaning:"굽힐 굴"},{char:"折",meaning:"꺾을 절"}],meaning:"빛이 밀도가 다른 두 매질을 통과할 때 진행 방향이 꺾이는 현상.",description:"스넬의 법칙으로 설명됩니다. n₁sinθ₁ = n₂sinθ₂",importance:"물리학의 광학 기본 개념으로, 렌즈와 프리즘 등과 연결됩니다.",practicalUse:"렌즈 설계, 광섬유 통신, 프리즘 분광기 등.",examTip:"밀도 높은 쪽으로 법선 가까이!"},
-{name:"관용표현",field:"국어",reading:"관용표현(慣用表現)",hanja:[{char:"慣",meaning:"익숙할 관"},{char:"用",meaning:"쓸 용"},{char:"表",meaning:"나타낼 표"},{char:"現",meaning:"나타날 현"}],meaning:"일정한 말들이 결합되어 전체가 하나의 뜻을 나타내는 표현.",description:"개별 단어의 뜻과 전체적인 뜻이 다른 것으로, 눈이 높다, 코가 세다 등이 대표적입니다.",importance:"국어 어휘력과 독해력을 평가하는 시험에서 자주 출제됩니다.",examTip:"개별 뜻은 전체 뜻과 다르다! 문맥에서 파악하는 훈련이 중요."},
-{name:"사자성어",field:"국어",reading:"사자성어(四字成語)",hanja:[{char:"四",meaning:"네 사"},{char:"字",meaning:"글자 자"},{char:"成",meaning:"이룰 성"},{char:"語",meaning:"말 어"}],meaning:"네 글자의 한자로 이루어진 고사성어.",description:"중국의 역사/전설에서 유래한 네 글자 한자 표현입니다. 유비무환, 일석이조 등.",importance:"국어 어휘/독해/문학 시험에서 필수적으로 출제됩니다.",examTip:"한자 뜻을 알면 성어의 의미를 유추할 수 있습니다!"},
-{name:"비유",field:"국어",reading:"비유(譬喩)",hanja:[{char:"譬",meaning:"비길 비"},{char:"喩",meaning:"깨달을 유"}],meaning:"어떤 대상을 다른 대상에 견주어 말하는 수사법.",description:"비유의 종류에는 직유, 은유, 풍유, 패유, 반어 등이 있습니다.",importance:"문학/국어 시험에서 수사법 분석의 핵심 개념입니다.",examTip:"직유(처럼), 은유(이다), 풍유(대신), 패유(와 같이), 반어(아닌 체)"},
-{name:"어휘분석",field:"국어",reading:"어휘 분석",hanja:null,meaning:"글의 어휘 선택과 의미를 분석하여 화자의 의도를 파악하는 방법.",description:"작품에서 사용된 특정 어휘의 의미/뉘앙스를 분석하여 화자의 의도와 작품의 주제를 파악합니다.",importance:"국어 독해 및 문학 분석의 기본 기초입니다.",examTip:"눈에 띄는 어휘를 표시하고, 왜 그렇게 선택되었는지 생각하는 연습!"},
-{name:"시조",field:"국어",reading:"시조(時調)",hanja:[{char:"時",meaning:"때 시"},{char:"調",meaning:"고를 조"}],meaning:"3~4연의 한국 고유의 정형시. 초장/중장/종장의 3구 6/5조.",description:"조선시대에 유행한 한국 고유의 정형시 형식입니다.",importance:"국어 문학 시험의 핵심 단원으로 시조 형식/감상 분석이 자주 출제됩니다.",examTip:"초장(소개)-중장(전개)-종장(마무리/교훈)의 흐름을 파악!"},
-{name:"이차방정식",field:"수학",reading:"이차방정식(二次方程式)",hanja:[{char:"二",meaning:"둘 이"},{char:"次",meaning:"차례 차"},{char:"方",meaning:"모를 방"},{char:"程",meaning:"겨룰 성"},{char:"式",meaning:"법 식"}],meaning:"최고차항이 2차인 다항 방정식. ax²+bx+c=0 꼴.",description:"근의 공식으로 해를 구할 수 있습니다. 판별식(D=b²-4ac)에 따라 실근의 개수가 달라집니다.",importance:"중학교 수학의 핵심 단원으로, 고등학교 수학/물리의 기초가 됩니다.",examTip:"근의 공식: x = (-b ± √D)/2a. D>0이면 실근 2개!"},
-{name:"삼각함수",field:"수학",reading:"삼각함수(三角函數)",hanja:[{char:"三",meaning:"셋 삼"},{char:"角",meaning:"뿔 각"},{char:"函",meaning:"상자 함"},{char:"數",meaning:"셀 수"}],meaning:"삼각형의 각과 변의 비율 관계를 함수로 나타낸 것 (sin, cos, tan).",description:"직각삼각형의 변의 비율을 각도의 함수로 정의합니다. 단위원으로 확장.",importance:"고등학교 수학/물리/공학의 필수 기초입니다.",examTip:"sin²θ + cos²θ = 1 (피타고라스의 항등식) 필수!"},
-{name:"미분",field:"수학",reading:"미분(微分)",hanja:[{char:"微",meaning:"아둘 미"},{char:"分",meaning:"나눌 분"}],meaning:"함수의 순간적인 변화율을 구하는 연산. 접선의 기울기.",description:"기하학적으로는 그 점에서의 접선의 기울기를 의미합니다.",importance:"미적분학의 한 축으로, 고등학교 수학/물리/경제학의 핵심 도구입니다.",examTip:"미분 = 변화율 = 접선의 기울기. 기본 공식과 합성함수 숙지!"},
-{name:"acronym",field:"영어",reading:"아크로님 (acronym)",hanja:null,meaning:"단어의 첫 글자들을 모아 만든 새 단어. (NASA, AIDS, UNESCO)",description:"Initialism과는 달리 발음 가능한 형태가 특징입니다.",importance:"영어 어휘 시험과 독해에서 자주 등장합니다.",examTip:"acronym(발음 가능) vs initialism(글자만: FBI, CIA)"},
-{name:"metaphor",field:"영어",reading:"메타포 (metaphor)",hanja:null,meaning:"어떤 것을 다른 것으로 직접 비유하는 수사법. (~은 ~이다 꼴)",description:"Metaphor는 ~is ~ 꼴로 두 대상을 직접 연결합니다. simile과 구별됩니다.",importance:"영어 문학/독해 시험에서 수사법 분석의 핵심입니다.",examTip:"metaphor(~이다) vs simile(~처럼/같이)의 차이!"},
-{name:"칸트의 의무론",field:"도덕",reading:"칸트의 의무론",hanja:null,meaning:"행동의 결과가 아니라 의무에 따라 도덕적 판단을 해야 한다는 윤리학 이론.",description:"정언명령(Categorical Imperative)이 핵심 원리입니다.",importance:"도덕/윤리 교과의 핵심 이론으로, 타 이론과 비교 출제됩니다.",examTip:"칸트=의무론, 밀=공리주의로 대비!"},
-{name:"공리주의",field:"도덕",reading:"공리주의(功利主義)",hanja:[{char:"功",meaning:"공 공"},{char:"利",meaning:"이로울 이"},{char:"主",meaning:"주할 주"},{char:"義",meaning:"옳을 의"}],meaning:"가장 많은 사람의 행복을 극대화하는 것이 옳다는 윤리 이론.",description:"존 스튜어트 밀과 제러미 벤담이 주도한 결과론적 윤리학의 대표입니다.",importance:"도덕/윤리 시험에서 칸트의 의무론과 함께 비교 출제됩니다.",examTip:"공리주의=결과, 칸트=의무! 행복의 총량이 최대가 되도록!"}
-];
-
-var TL_ERAS=[
-{id:"stone",name:"구석기",start:-100000,end:-3000,color:"#8B7355"},
-{id:"newstone",name:"신석기",start:-3000,end:-1000,color:"#A0522D"},
-{id:"gojoseon",name:"고조선",start:-2333,end:-108,color:"#CD853F"},
-{id:"samhan",name:"삼한",start:-300,end:57,color:"#DAA520"},
-{id:"goguryeo",name:"고구려",start:37,end:668,color:"#ff6b6b"},
-{id:"baekje",name:"백제",start:18,end:660,color:"#ff6b6b"},
-{id:"silla",name:"신라",start:57,end:935,color:"#ff6b6b"},
-{id:"unified_silla",name:"통일신라",start:676,end:935,color:"#ff6b6b"},
-{id:"goryeo",name:"고려",start:918,end:1392,color:"#ff6b6b"},
-{id:"joseon",name:"조선시대",start:1392,end:1897,color:"#ff6b6b"},
-{id:"korean_empire",name:"대한제국",start:1897,end:1910,color:"#fd79a8"},
-{id:"japan",name:"일제강점기",start:1910,end:1945,color:"#ff6b6b"},
-{id:"modern",name:"대한민국",start:1948,end:2025,color:"#74b9ff"}
-];
-
-var TL_EVENTS=[
-{year:-2333,name:"고조선 건국",era:"gojoseon",desc:"단군왕검이 고조선을 세움"},
-{year:-108,name:"한사군 설치",era:"gojoseon",desc:"고조선 멸망, 한나라 한사군 설치"},
-{year:57,name:"신라 건국",era:"silla",desc:"경주 이씨 시조가 신라를 세움"},
-{year:37,name:"고구려 건국",era:"goguryeo",desc:"추모왕이 고구려를 세움"},
-{year:18,name:"백제 건국",era:"baekje",desc:"온조왕이 백제를 세움"},
-{year:393,name:"광개토왕",era:"goguryeo",desc:"광개토왕이 영토를 크게 넓힘"},
-{year:668,name:"삼국통일",era:"unified_silla",desc:"신라가 삼국을 통일"},
-{year:918,name:"고려 건국",era:"goryeo",desc:"태조 왕건이 고려를 세움"},
-{year:1231,name:"몽고 침입",era:"goryeo",desc:"몽골이 고려를 침략"},
-{year:1392,name:"조선 건국",era:"joseon",desc:"이성계가 조선을 건국"},
-{year:1443,name:"훈민정음 창제",era:"joseon",desc:"세종대왕이 한글 창제"},
-{year:1453,name:"계유정난",era:"joseon",desc:"수양대군이 권력 장악"},
-{year:1592,name:"임진왜란",era:"joseon",desc:"일본이 조선을 침략"},
-{year:1636,name:"병자호란",era:"joseon",desc:"청이 조선을 침략"},
-{year:1876,name:"강화도조약",era:"korean_empire",desc:"일본과 불평등 조약"},
-{year:1894,name:"동학농민운동",era:"joseon",desc:"동학 농민군 봉기"},
-{year:1897,name:"대한제국 선포",era:"korean_empire",desc:"고종이 대한제국 선포"},
-{year:1905,name:"을사조약",era:"korean_empire",desc:"외교권 박탈"},
-{year:1910,name:"한일병합",era:"japan",desc:"일제에 의해 강제 병합"},
-{year:1919,name:"3·1운동",era:"japan",desc:"전국적인 독립운동"},
-{year:1945,name:"광복",era:"modern",desc:"일제로부터 해방"},
-{year:1948,name:"대한민국 수립",era:"modern",desc:"대한민국 정부 수립"},
-{year:1950,name:"6·25전쟁",era:"modern",desc:"한국전쟁 발발"},
-{year:1987,name:"6·10민주항쟁",era:"modern",desc:"민주화 운동"},
-{year:1988,name:"서울 올림픽",era:"modern",desc:"서울 올림픽 개최"}
-];
-
-var TL_BASE=2400,tlZoomLvl=1,currentField='all',highlightTerm=null;
-
 (function(){
+var currentField='all';
+var highlightTerm=null;
+var tlZoomLvl=1;
 var si=document.getElementById('searchInput'),se=document.getElementById('suggestions'),ra=document.getElementById('resultArea'),sb=document.getElementById('statsBar'),qt=document.getElementById('quickTags');
-
-var counts={};KB.forEach(function(i){counts[i.field]=(counts[i.field]||0)+1;});
-document.getElementById('countAll').textContent=KB.length;
-Object.keys(counts).forEach(function(f){var el=document.getElementById('count'+f);if(el)el.textContent=counts[f]});
-
-['진대법','뷰렛반응','삼강행실도','이차방정식','비유','칸트의 의무론','요오드반응'].forEach(function(t){
-var b=document.createElement('button');b.className='quick-tag';b.textContent=t;
-b.addEventListener('click',function(){si.value=t;doSearch()});qt.appendChild(b)});
 
 document.querySelectorAll('.subject-pill').forEach(function(p){
 p.addEventListener('click',function(){
   document.querySelectorAll('.subject-pill').forEach(function(x){x.classList.remove('active')});
   p.classList.add('active');currentField=p.getAttribute('data-field');
-  var tl=document.getElementById('timelineSection');
-  tl.classList.toggle('hidden',currentField!=='all'&&currentField!=='역사');
-  var tl=document.getElementById('timelineSection');tl.classList.remove('hidden');if(sb.style.display==='flex')searchByField(currentField==='all'?null:currentField);
+  document.getElementById('timelineSection').classList.add('hidden');
+  sb.style.display='none';ra.innerHTML='';
 })});
 
 document.getElementById('searchBtn').addEventListener('click',doSearch);
 si.addEventListener('keydown',function(e){if(e.key==='Enter'){doSearch();se.classList.remove('show')}});
 si.addEventListener('input',function(){
-var q=this.value.trim().toLowerCase();if(!q){se.classList.remove('show');return}
-var pool=currentField==='all'?KB:KB.filter(function(i){return i.field===currentField});
-var m=pool.filter(function(i){return i.name.toLowerCase().indexOf(q)!==-1||i.meaning.toLowerCase().indexOf(q)!==-1||(i.reading&&i.reading.toLowerCase().indexOf(q)!==-1)}).slice(0,6);
-if(!m.length){se.classList.remove('show');return}
-se.innerHTML=m.map(function(i){return '<div class="suggestion-item" data-name="'+esc(i.name)+'"><span class="suggestion-tag field-'+i.field+'">'+i.field+'</span><span class="suggestion-name">'+esc(i.name)+'</span></div>'}).join('');
-se.querySelectorAll('.suggestion-item').forEach(function(el){el.addEventListener('click',function(){si.value=this.getAttribute('data-name');se.classList.remove('show');doSearch()})});
-se.classList.add('show')});
+  se.classList.remove('show');
+});
 document.addEventListener('click',function(e){if(!e.target.closest('.search-container'))se.classList.remove('show')});
 
 function searchByField(f){
-  var items=f?KB.filter(function(i){return i.field===f}):KB;
-  document.getElementById('timelineSection').classList.toggle('hidden',!f||f!=='역사');renderTimeline();
-  sb.style.display='flex';
-  sb.innerHTML='<span class="stats-text">'+(f||'전체')+' — '+items.length+'개 용어</span><div><button class="filter-btn" id="backBtn">← 뒤로</button></div>';
-  document.getElementById('backBtn').addEventListener('click',resetSearch);
-  ra.innerHTML=items.map(renderCard).join('')}
+  document.getElementById('timelineSection').classList.toggle('hidden',!f||f!=='역사');
+  renderTimeline();
+  sb.style.display='none';
+}
 
-function resetSearch(){var tl=document.getElementById('timelineSection');if(currentField==='역사'||currentField==='all')tl.classList.remove('hidden');else tl.classList.add('hidden');sb.style.display='none';ra.innerHTML='';si.value='';highlightTerm=null;renderTimeline()}
+function resetSearch(){
+  document.getElementById('timelineSection').classList.add('hidden');
+  sb.style.display='none';ra.innerHTML='';si.value='';highlightTerm=null;
+}
 
 function doSearch(){
   var q=si.value.trim();if(!q)return;highlightTerm=null;
-  var pool=currentField==='all'?KB:KB.filter(function(i){return i.field===currentField});
-  var m=pool.filter(function(i){return i.name.toLowerCase().indexOf(q.toLowerCase())!==-1||i.meaning.toLowerCase().indexOf(q.toLowerCase())!==-1||(i.reading&&i.reading.toLowerCase().indexOf(q.toLowerCase())!==-1)});
   se.classList.remove('show');
-  if(!m.length){
-    ra.innerHTML='<div class="not-found-card"><div class="emoji">🔍</div><h3>"'+esc(q)+'"에 대한 결과가 없습니다</h3><p>현재 '+KB.length+'개의 학습 용어가 등록되어 있습니다.</p><div class="tip-list"><h4>💡 검색 팁</h4><ul><li>단어를 정확하게 입력해주세요</li><li>비슷한 말로 검색해보세요</li><li>과목을 선택하면 해당 분야만 검색됩니다</li></ul></div></div>';
-    if(getOaiKey())ra.innerHTML+='<div style="text-align:center;margin-top:16px"><button onclick="aiSearch(\''+esc(q).replace(/'/g,"\\'")+'\')" style="padding:12px 24px;background:linear-gradient(135deg,var(--accent),#8b5cf6);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">🤖 AI에게 물어보기</button></div>';
-    renderTimeline();return}
-  if(m[0].tlEra){highlightTerm=m[0];document.getElementById('timelineSection').classList.remove('hidden');}
-  ra.innerHTML=m.map(renderCard).join('');renderTimeline()}
+  document.getElementById('timelineSection').classList.add('hidden');
+  aiSearch(q);
+}
 
 function renderCard(item){
 var h='<div class="result-card"><div class="result-header"><span class="result-term">'+esc(item.name)+'</span><span class="result-field field-'+item.field+'">'+item.field+'</span></div>';
@@ -455,7 +364,7 @@ window.aiSearch=async function(query){
     var ai=JSON.parse(jsonMatch[0]);ai.name=query;
     highlightTerm=ai.tlEra?ai:null;if(ai.tlEra)document.getElementById('timelineSection').classList.remove('hidden');
     ra.innerHTML=renderAICard(ai);renderTimeline();
-  }catch(e){ra.innerHTML='<div class="not-found-card"><div class="emoji">❌</div><h3>AI 분석 실패</h3><p>'+esc(e.message)+'</p></div>'}};;
+  }catch(e){ra.innerHTML='<div class="not-found-card"><div class="emoji">❌</div><h3>AI 분석 실패</h3><p>'+esc(e.message)+'</p></div>'}};
 
 renderTimeline();
 })();
