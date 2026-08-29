@@ -10,37 +10,31 @@
 @keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes branchGrow{from{transform:scaleY(0);opacity:0}to{transform:scaleY(1);opacity:1}}
+@keyframes leafPop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
 :root{
   --bg:#08080d;--surface:#12121c;--surface2:#1a1a2e;--surface3:#222238;
   --border:#2a2a45;
   --text:#f0f0f8;--text2:#8888a8;--text3:#555570;
   --accent:#6c5ce7;--accent2:#a29bfe;--accent-glow:rgba(108,92,231,.4);
-  --positive:#00cec9;--positive-bg:rgba(0,206,201,.08);
-  --negative:#ff6b6b;--negative-bg:rgba(255,107,107,.08);
-  --neutral:#a29bfe;--neutral-bg:rgba(162,155,254,.08);
-  --info:#74b9ff;--info-bg:rgba(116,185,255,.08);
-  --warning:#ffeaa7;--warning-bg:rgba(255,234,167,.08);
-  --radius:16px;--radius-sm:10px;
-  --shadow:0 8px 32px rgba(0,0,0,.5);
+  --positive:#00cec9;--negative:#ff6b6b;--neutral:#a29bfe;--info:#74b9ff;--warning:#ffeaa7;
+  --radius:16px;--radius-sm:10px;--shadow:0 8px 32px rgba(0,0,0,.5);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Noto Sans KR','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 10%,rgba(108,92,231,.06) 0%,transparent 50%),radial-gradient(ellipse at 80% 90%,rgba(0,206,201,.04) 0%,transparent 50%);pointer-events:none;z-index:0}
-
-.container{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
+.container{max-width:900px;margin:0 auto;padding:20px;position:relative;z-index:1}
 
 /* 헤더 */
-.header{text-align:center;padding:48px 0 32px}
+.header{text-align:center;padding:48px 0 32px;position:relative}
 .header-badge{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:30px;padding:6px 16px;font-size:12px;color:var(--text2);margin-bottom:16px}
 .header-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--positive);animation:pulse 2s infinite}
-.header h1{font-size:clamp(1.8em,5vw,2.4em);font-weight:900;background:linear-gradient(135deg,var(--accent2),var(--positive),var(--info));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;letter-spacing:-1px}
-.header p{color:var(--text2);font-size:15px;font-weight:300;max-width:400px;margin:0 auto}
+.header h1{font-size:clamp(1.8em,5vw,2.4em);font-weight:900;background:linear-gradient(135deg,var(--accent2),var(--positive),var(--info));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.header p{color:var(--text2);font-size:15px;font-weight:300;max-width:420px;margin:0 auto}
 .settings-btn{position:absolute;top:48px;right:0;background:var(--surface);border:1px solid var(--border);color:var(--text2);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1em;display:flex;align-items:center;justify-content:center;transition:all .25s}
 .settings-btn:hover{border-color:var(--accent);color:var(--accent2)}
 
-/* 설정 오버레이 */
+/* 설정 */
 .settings-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;backdrop-filter:blur(8px)}
 .settings-overlay.active{display:flex;align-items:center;justify-content:center;animation:fadeIn .2s ease}
 .settings-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;width:92%;max-width:440px;box-shadow:0 16px 64px rgba(0,0,0,.6);animation:slideUp .3s ease}
@@ -68,81 +62,94 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* 사용법 */
 .usage-guide{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px;animation:slideUp .5s ease .1s both}
-.usage-guide h3{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.usage-guide h3{font-size:15px;font-weight:700;margin-bottom:16px}
 .usage-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .usage-item{background:var(--surface2);border-radius:10px;padding:14px}
-.usage-item .ui-title{font-size:13px;font-weight:600;margin-bottom:6px}
-.usage-item .ui-desc{font-size:12px;color:var(--text2);line-height:1.5}
+.usage-item .ut{font-size:13px;font-weight:600;margin-bottom:6px}
+.usage-item .ud{font-size:12px;color:var(--text2);line-height:1.5}
 
 /* 에러/로딩 */
-.error-msg{background:var(--negative-bg);border:1px solid rgba(255,107,107,.2);border-radius:var(--radius-sm);padding:14px 18px;color:var(--negative);font-size:14px;margin-bottom:20px;display:none;animation:slideUp .3s ease}
+.error-msg{background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.2);border-radius:var(--radius-sm);padding:14px 18px;color:var(--negative);font-size:14px;margin-bottom:20px;display:none}
 .error-msg.active{display:flex;align-items:center;gap:8px}
 .loading{display:none;text-align:center;padding:48px 20px;animation:fadeIn .3s ease}
 .loading.active{display:block}
 .loading .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 16px}
 .loading p{color:var(--text2);font-size:14px}
-.loading .step{font-size:12px;color:var(--text3);margin-top:8px}
 .loading .progress{width:200px;height:4px;background:var(--surface2);border-radius:2px;margin:12px auto 0;overflow:hidden}
 .loading .progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--positive));border-radius:2px;transition:width .5s ease;width:0%}
 
-/* AI 요약 */
-.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px;box-shadow:var(--shadow);animation:slideUp .4s ease}
-.summary-card h3{font-size:15px;font-weight:700;margin-bottom:12px;color:var(--accent2);display:flex;align-items:center;gap:8px}
-.summary-text{font-size:14px;line-height:1.8;color:var(--text2)}
-.summary-stats{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap}
-.stat-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:5px}
-.stat-chip .num{font-weight:700;color:var(--accent2)}
+/* ====== 나무(Tree) 구조 ====== */
+.tree{padding:20px 0;animation:slideUp .5s ease}
 
-/* 감정 카드 */
-.results-grid{display:grid;gap:14px}
-.sentiment-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);animation:slideUp .4s ease;transition:all .25s}
-.sentiment-card:hover{border-color:var(--accent);box-shadow:0 8px 40px rgba(108,92,231,.15)}
-.card-header{padding:16px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;transition:background .2s}
-.card-header:hover{background:var(--surface2)}
-.card-left{display:flex;align-items:center;gap:12px}
-.card-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;box-shadow:0 0 8px currentColor}
-.card-dot.pos{background:var(--positive);color:var(--positive)}
-.card-dot.neg{background:var(--negative);color:var(--negative)}
-.card-dot.neu{background:var(--neutral);color:var(--neutral)}
-.card-dot.q{background:var(--info);color:var(--info)}
-.card-dot.sug{background:var(--warning);color:var(--warning)}
-.card-name{font-size:15px;font-weight:700}
-.card-count{font-size:13px;color:var(--text3);margin-left:8px}
-.card-summary{font-size:12px;color:var(--text2);margin-top:2px}
-.card-arrow{font-size:12px;color:var(--text3);transition:transform .25s}
-.sentiment-card.open .card-arrow{transform:rotate(180deg)}
+/* 뿌리 (영상 정보) */
+.tree-root{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;text-align:center;margin-bottom:0;position:relative;box-shadow:var(--shadow)}
+.tree-root .root-title{font-size:18px;font-weight:900;margin-bottom:6px}
+.tree-root .root-channel{font-size:13px;color:var(--text2)}
+.tree-root .root-stats{display:flex;justify-content:center;gap:16px;margin-top:10px;flex-wrap:wrap}
+.tree-root .root-stat{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:4px}
+.tree-root .root-stat .num{color:var(--accent2);font-weight:700}
+.tree-root .root-summary{margin-top:12px;font-size:13px;color:var(--text2);line-height:1.7;max-width:600px;margin-left:auto;margin-right:auto}
+.tree-root .root-insight{margin-top:10px;padding:10px 14px;background:rgba(108,92,231,.06);border:1px solid rgba(108,92,231,.15);border-radius:var(--radius-sm);font-size:12px;color:var(--accent2);line-height:1.6}
 
-/* 서브 탭 */
-.sub-tabs{display:flex;gap:4px;padding:0 20px;border-bottom:1px solid var(--border)}
-.sub-tab{padding:8px 14px;font-size:12px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;font-family:inherit;background:none;border-top:none;border-left:none;border-right:none;font-weight:500}
-.sub-tab:hover{color:var(--text2)}
-.sub-tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
+/* 줄기连接선 */
+.tree-trunk{width:4px;height:40px;background:linear-gradient(180deg,var(--accent),var(--accent2));margin:0 auto;border-radius:2px;opacity:.5}
 
-/* 댓글 목록 */
-.comment-list{padding:12px 20px 16px;display:none}
-.comment-list.active{display:block}
-.comment-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;line-height:1.6}
-.comment-item:last-child{border-bottom:none}
-.comment-idx{color:var(--accent2);font-weight:700;min-width:24px;flex-shrink:0}
-.comment-author{font-weight:600;color:var(--text2);font-size:11px}
-.comment-text{color:var(--text);flex:1}
-.comment-likes{color:var(--text3);font-size:11px;white-space:nowrap}
+/* 가지 컨테이너 */
+.tree-branches{display:flex;justify-content:center;gap:0;flex-wrap:wrap;position:relative;padding-top:10px}
+.tree-branches::before{content:'';position:absolute;top:0;left:50%;width:80%;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);transform:translateX(-50%);opacity:.3}
+
+/* 가지 (카테고리) */
+.tree-branch{flex:1;min-width:200px;max-width:280px;position:relative;padding:0 8px;margin-bottom:20px}
+.branch-stem{width:3px;height:30px;margin:0 auto;border-radius:2px;opacity:.4}
+.branch-node{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.branch-node:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.branch-node.open{border-color:var(--accent)}
+.branch-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:8px;box-shadow:0 0 8px currentColor}
+.branch-name{font-size:14px;font-weight:700;display:inline}
+.branch-count{font-size:11px;color:var(--text3);margin-left:8px}
+.branch-summary{font-size:11px;color:var(--text3);margin-top:6px;line-height:1.5}
+.branch-arrow{position:absolute;top:16px;right:14px;font-size:11px;color:var(--text3);transition:transform .25s}
+.branch-node.open .branch-arrow{transform:rotate(180deg)}
+
+/* 잎 sublist (댓글) */
+.branch-leaves{display:none;padding:0 8px;margin-top:8px}
+.branch-leaves.open{display:block}
+.branch-sub{margin-bottom:6px}
+.branch-sub-name{font-size:12px;font-weight:600;color:var(--text2);padding:6px 10px;background:var(--surface2);border-radius:6px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+.branch-sub-name:hover{background:var(--surface3);color:var(--text)}
+.branch-sub-name .sub-arrow{font-size:10px;transition:transform .2s;margin-left:auto}
+.branch-sub-name.open .sub-arrow{transform:rotate(90deg)}
+.branch-sub-comments{display:none;padding:6px 0 6px 16px}
+.branch-sub-comments.open{display:block}
+.leaf-comment{padding:8px 10px;font-size:12px;color:var(--text2);line-height:1.6;border-left:2px solid var(--border);margin-bottom:4px;animation:leafPop .3s ease;animation-fill-mode:both}
+.leaf-comment:nth-child(1){animation-delay:.05s}
+.leaf-comment:nth-child(2){animation-delay:.1s}
+.leaf-comment:nth-child(3){animation-delay:.15s}
+.leaf-comment:nth-child(4){animation-delay:.2s}
+.leaf-comment:nth-child(5){animation-delay:.25s}
+
+/* 통계 바 */
+.tree-stats{display:flex;justify-content:center;gap:12px;margin-top:20px;flex-wrap:wrap}
+.tree-stat{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:8px 16px;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:6px}
+.tree-stat .num{font-weight:700;color:var(--accent2)}
 
 @media(max-width:600px){
   .header{padding:32px 0 20px}
   .usage-grid{grid-template-columns:1fr}
   .input-row{flex-direction:column}
   .input-row input,.btn-analyze{width:100%}
+  .tree-branches{flex-direction:column;align-items:center}
+  .tree-branch{min-width:100%;max-width:100%}
 }
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="header" style="position:relative">
+  <div class="header">
     <div class="header-badge"><span class="dot"></span>AI 기반 실시간 분석</div>
     <h1>댓글 분석기</h1>
-    <p>YouTube 영상 링크를 붙여넣으면 AI가 댓글의 감정과 반응을 분석해 드립니다</p>
-    <button class="settings-btn" onclick="toggleSettings()" title="API 설정">⚙️</button>
+    <p>YouTube 영상 링크를 붙여넣으면 AI가 댓글의 감정과 반응을 나뭇가지처럼 분석해 드립니다</p>
+    <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
   </div>
 
   <div class="input-section">
@@ -156,36 +163,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div class="usage-guide" id="usageGuide">
     <h3>📖 사용법</h3>
     <div class="usage-grid">
-      <div class="usage-item">
-        <div class="ui-title" style="color:var(--positive)">1️⃣ 링크 입력</div>
-        <div class="ui-desc">YouTube 영상 URL을 복사해서 붙여넣으세요<br><code style="background:var(--surface3);padding:2px 6px;border-radius:4px;font-size:11px">youtube.com/watch?v=...</code></div>
-      </div>
-      <div class="usage-item">
-        <div class="ui-title" style="color:var(--info)">2️⃣ AI 분석</div>
-        <div class="ui-desc">AI가 영상 링크를 분석하여<br>감정별·주제별로 분류합니다</div>
-      </div>
-      <div class="usage-item">
-        <div class="ui-title" style="color:var(--accent2)">3️⃣ 상세 확인</div>
-        <div class="ui-desc">각 카테고리를 클릭하면<br>상세 내용과 댓글 예시 확인</div>
-      </div>
-      <div class="usage-item">
-        <div class="ui-title" style="color:var(--warning)">🔑 API 키 필요</div>
-        <div class="ui-desc">⚙️ 설정에서 OpenRouter 키 입력<br><a href="https://openrouter.ai/keys" style="color:var(--accent2)">openrouter.ai/keys</a></div>
-      </div>
+      <div class="usage-item"><div class="ut" style="color:var(--positive)">1️⃣ 링크 입력</div><div class="ud">YouTube 영상 URL을 복사해서 붙여넣으세요</div></div>
+      <div class="usage-item"><div class="ut" style="color:var(--info)">2️⃣ AI 분석</div><div class="ud">AI가 영상을 분석하여 나뭇가지 형태로 분류합니다</div></div>
+      <div class="usage-item"><div class="ut" style="color:var(--accent2)">3️⃣ 가지 확장</div><div class="ud">카테고리 → 세부분류 → 댓글 순으로 클릭하여 확장</div></div>
+      <div class="usage-item"><div class="ut" style="color:var(--warning)">🔑 API 키</div><div class="ud">⚙️에서 OpenRouter 키 입력 (openrouter.ai/keys)</div></div>
     </div>
   </div>
 
   <div class="error-msg" id="errorMsg"></div>
-
-  <div class="loading" id="loading">
-    <div class="spinner"></div>
-    <p id="loadingText">분석을 시작합니다...</p>
-    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
-    <p class="step" id="loadingStep"></p>
-  </div>
-
-  <div id="summaryArea"></div>
-  <div class="results-grid" id="resultsArea"></div>
+  <div class="loading" id="loading"><div class="spinner"></div><p id="loadingText">분석을 시작합니다...</p><div class="progress"><div class="progress-bar" id="progressBar"></div></div></div>
+  <div id="treeArea"></div>
 </div>
 
 <div class="settings-overlay" id="settingsOverlay" onclick="if(event.target===this)toggleSettings()">
@@ -195,10 +182,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <input type="password" id="oaiKeyInput" placeholder="sk-or-..." autocomplete="off">
     <div class="hint">OpenRouter에서 발급 (openrouter.ai/keys)</div>
     <div id="keyStatus"></div>
-    <div class="btn-row">
-      <button class="btn-close" onclick="toggleSettings()">닫기</button>
-      <button class="btn-save" onclick="saveSettings()">💾 저장</button>
-    </div>
+    <div class="btn-row"><button class="btn-close" onclick="toggleSettings()">닫기</button><button class="btn-save" onclick="saveSettings()">💾 저장</button></div>
   </div>
 </div>
 
@@ -228,207 +212,180 @@ function showKS(msg,type){
   s.style.border='1px solid '+(type==='ok'?'rgba(0,206,201,.2)':'rgba(255,107,107,.2)');
   s.style.borderRadius='var(--radius-sm)';s.style.padding='10px 14px';s.style.fontSize='13px';
 }
-window.toggleSettings=toggleSettings;
-window.saveSettings=saveSettings;
+window.toggleSettings=toggleSettings;window.saveSettings=saveSettings;
 
-// ===== UI 헬퍼 =====
-function showError(msg){var e=document.getElementById('errorMsg');e.textContent='❌ '+msg;e.classList.add('active')}
+function showError(msg){var e=document.getElementById('errorMsg');e.textContent='\u274c '+msg;e.classList.add('active')}
 function hideError(){document.getElementById('errorMsg').classList.remove('active')}
 function showLoading(show){document.getElementById('loading').classList.toggle('active',show)}
-function updateLoading(text,step,pct){
-  if(text)document.getElementById('loadingText').textContent=text;
-  if(step)document.getElementById('loadingStep').textContent=step;
-  if(pct!==undefined)document.getElementById('progressBar').style.width=pct+'%';
-}
+function updateLoading(t,p){if(t)document.getElementById('loadingText').textContent=t;if(p!==undefined)document.getElementById('progressBar').style.width=p+'%'}
 function esc(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
-// ===== YouTube ID 추출 =====
+// ===== YouTube ID =====
 function extractVideoId(url){
   if(!url)return null;
-  try{
-    var u=new URL(url.indexOf('?')>-1?url:'https://'+url);
-    var v=u.searchParams.get('v');
-    if(v&&v.length===11)return v;
-    var segs=u.pathname.split('/').filter(Boolean);
-    if(segs.length>0&&segs[segs.length-1].length===11)return segs[segs.length-1];
-  }catch(e){}
+  try{var u=new URL(url.indexOf('?')>-1?url:'https://'+url);var v=u.searchParams.get('v');if(v&&v.length===11)return v;var segs=u.pathname.split('/').filter(Boolean);if(segs.length>0&&segs[segs.length-1].length===11)return segs[segs.length-1]}catch(e){}
   return null;
 }
 
-// ===== 영상 정보 가져오기 =====
+// ===== 영상 정보 =====
 async function fetchVideoInfo(videoId){
   var key=localStorage.getItem('ytKey');
-  if(!key)return{title:'YouTube 영상',channel:'알 수 없음',viewCount:0,likeCount:0,commentCount:0,thumbnail:''};
+  if(!key)return{title:'YouTube 영상',channel:'',viewCount:0,likeCount:0,commentCount:0,thumbnail:'',description:''};
   try{
     var res=await fetch('https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id='+videoId+'&key='+key);
-    if(!res.ok)throw new Error('YouTube API 오류');
+    if(!res.ok)return{title:'YouTube 영상',channel:'',viewCount:0,likeCount:0,commentCount:0,thumbnail:'',description:''};
     var data=await res.json();
-    if(!data.items||!data.items.length)return null;
-    var s=data.items[0].snippet;
-    var st=data.items[0].statistics;
-    return{
-      title:s.title,channel:s.channelTitle,
-      viewCount:parseInt(st.viewCount)||0,
-      likeCount:parseInt(st.likeCount)||0,
-      commentCount:parseInt(st.commentCount)||0,
-      thumbnail:s.thumbnails.high?s.thumbnails.high.url:s.thumbnails.medium?s.thumbnails.medium.url:s.thumbnails.default.url,
-      publishedAt:s.publishedAt,description:s.description
-    };
-  }catch(e){return null}
+    if(!data.items||!data.items.length)return{title:'YouTube 영상',channel:'',viewCount:0,likeCount:0,commentCount:0,thumbnail:'',description:''};
+    var s=data.items[0].snippet,st=data.items[0].statistics;
+    return{title:s.title,channel:s.channelTitle,viewCount:parseInt(st.viewCount)||0,likeCount:parseInt(st.likeCount)||0,commentCount:parseInt(st.commentCount)||0,thumbnail:s.thumbnails.high?s.thumbnails.high.url:s.thumbnails.medium?s.thumbnails.medium.url:'',description:(s.description||'').substring(0,500)};
+  }catch(e){return{title:'YouTube 영상',channel:'',viewCount:0,likeCount:0,commentCount:0,thumbnail:'',description:''}}
 }
 
 // ===== AI 분석 =====
 async function analyzeWithAI(videoInfo,url){
   var key=localStorage.getItem('oaiKey');
-  if(!key)throw new Error('API 키가 없습니다. ⚙️ 설정에서 OpenRouter API 키를 입력해주세요.');
+  if(!key)throw new Error('API 키가 없습니다.');
+  var ctx=videoInfo&&videoInfo.title!=='YouTube 영상'?
+    '영상 제목: '+videoInfo.title+'\n채널: '+videoInfo.channel+'\n조회수: '+videoInfo.viewCount.toLocaleString()+'\n좋아요: '+videoInfo.likeCount.toLocaleString()+'\n댓글 수: '+videoInfo.commentCount.toLocaleString()+'\n설명: '+videoInfo.description
+    :'YouTube 영상: '+url+'\n(영상 정보를 직접 확인하고 분석해주세요)';
 
-  var videoContext=videoInfo?
-    '영상 제목: '+videoInfo.title+'\n채널: '+videoInfo.channel+'\n조회수: '+videoInfo.viewCount.toLocaleString()+'\n좋아요: '+videoInfo.likeCount.toLocaleString()+'\n댓글 수: '+videoInfo.commentCount.toLocaleString()+'\n설명: '+(videoInfo.description||'').substring(0,500)
-    :'YouTube 영상: '+url;
-
-  var prompt='당신은 YouTube 댓글 분석 전문가입니다. 아래 영상에 대해 분석해주세요.\n\n'+videoContext+'\n\n규칙:\n1. 반드시 아래 JSON 형식으로만 응답하세요.\n2. 카테고리는 최소 3개, 최대 7개\n3. type은 positive, negative, neutral, question, suggestion 중 하나\n4. comments는 각 카테고리에 해당하는 예상 댓글 예시 2~5개\n5. overallSummary는 한국어로 2~3줄 요약\n6.这名 영상의 특성에 맞는 현실적인 분석\n\nJSON:\n{"categories":[{"name":"카테고리명","type":"positive|negative|neutral|question|suggestion","count":예상댓글수,"summary":"한줄요약","comments":["댓글 예시1","댓글 예시2"]}],"totalAnalyzed":예상총댓글수,"overallSummary":"전체요약","videoInsight":"영상에 대한 AI 분석 코멘트"}';
+  var prompt='당신은 YouTube 댓글 분석 전문가입니다. 아래 영상의 댓글 반응을 나뭇가지(tree) 구조로 분석해주세요.\n\n'+ctx+'\n\n규칙:\n1. 반드시 아래 JSON으로만 응답\n2. categories 배열: 3~6개 카테고리\n3. 각 카테고리에 subCategories 배열: 2~4개 세부분류\n4. 각 세부분류에 comments 배열: 실제 댓글 예시 2~4개\n5. type은 positive, negative, neutral, question, suggestion 중 하나\n6. 전체 요약 포함\n\nJSON 형식:\n{"categories":[{"name":"카테고리명","type":"positive","summary":"한줄요약","subCategories":[{"name":"세부분류","comments":["댓글1","댓글2","댓글3"]}]}],"totalAnalyzed":100,"overallSummary":"전체요약","videoInsight":"영상 분석 코멘트"}';
 
   var res=await fetch('https://openrouter.ai/api/v1/chat/completions',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-    body:JSON.stringify({model:'openai/gpt-4o-mini',messages:[
-      {role:'system',content:'YouTube 댓글 분석 전문가. 반드시 JSON으로만 응답. 한국어. 영상 제목과 채널 정보를 바탕으로 현실적인 댓글 반응을 예측하여 분석.'},
-      {role:'user',content:prompt}
-    ],temperature:0.4,max_tokens:4000})
+    method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+    body:JSON.stringify({model:'openai/gpt-4o-mini',messages:[{role:'system',content:'YouTube 댓글 분석 전문가. 반드시 JSON으로만 응답. 한국어.'},{role:'user',content:prompt}],temperature:0.4,max_tokens:4000})
   });
   if(!res.ok){var err=await res.json().catch(function(){return{}});throw new Error(err&&err.error?err.error.message:'API 오류 ('+res.status+')')}
-  var data=await res.json();
-  var content=data.choices[0].message.content;
-  var jsonMatch=content.match(/\{[\s\S]*\}/);
-  if(!jsonMatch)throw new Error('AI 응답에서 JSON을 파싱할 수 없습니다.');
-  return JSON.parse(jsonMatch[0]);
+  var data=await res.json();var content=data.choices[0].message.content;
+  var m=content.match(/\{[\s\S]*\}/);if(!m)throw new Error('JSON 파싱 실패');
+  return JSON.parse(m[0]);
 }
 
-// ===== 결과 렌더링 =====
-function getDotClass(type){
-  if(!type)return'neu';
-  if(type==='positive')return'pos';
-  if(type==='negative')return'neg';
-  if(type==='question')return'q';
-  if(type==='suggestion')return'sug';
-  return'neu';
+// ===== 나무 렌더링 =====
+function getDotColor(type){
+  if(!type)return'var(--neutral)';
+  if(type==='positive')return'var(--positive)';
+  if(type==='negative')return'var(--negative)';
+  if(type==='question')return'var(--info)';
+  if(type==='suggestion')return'var(--warning)';
+  return'var(--neutral)';
 }
-function getTypeLabel(type){
-  if(!type)return'중립';
-  if(type==='positive')return'긍정';
-  if(type==='negative')return'부정';
-  if(type==='question')return'질문';
-  if(type==='suggestion')return'제안';
-  return'중립';
-}
-function getTypeEmoji(type){
-  if(!type)return'😐';
-  if(type==='positive')return'😊';
-  if(type==='negative')return'😠';
-  if(type==='question')return'❓';
-  if(type==='suggestion')return'💡';
-  return'😐';
+function getEmoji(type){
+  if(!type)return'\ud83d\ude10';
+  if(type==='positive')return'\ud83d\ude0a';
+  if(type==='negative')return'\ud83d\ude20';
+  if(type==='question')return'\u2753';
+  if(type==='suggestion')return'\ud83d\udca1';
+  return'\ud83d\ude10';
 }
 
-function renderSummary(videoInfo,analysis){if(!videoInfo)videoInfo={title:"YouTube 영상",channel:"",viewCount:0,likeCount:0,commentCount:0,thumbnail:""};
-  var h='<div class="summary-card">';
-  h+='<h3>📊 AI 분석 요약</h3>';
-  if(videoInfo){
-    h+='<div style="display:flex;gap:16px;align-items:center;margin-bottom:14px;flex-wrap:wrap">';
-    if(videoInfo.thumbnail)h+='<img src="'+esc(videoInfo.thumbnail)+'" style="width:120px;height:68px;object-fit:cover;border-radius:8px;border:1px solid var(--border)">';
-    h+='<div><div style="font-weight:700;font-size:14px;margin-bottom:4px">'+esc(videoInfo.title)+'</div>';
-    h+='<div style="font-size:12px;color:var(--text2)">'+esc(videoInfo.channel)+'</div>';
-    h+='<div style="font-size:11px;color:var(--text3);margin-top:4px">👁 '+videoInfo.viewCount.toLocaleString()+' · 👍 '+videoInfo.likeCount.toLocaleString()+' · 💬 '+videoInfo.commentCount.toLocaleString()+'</div>';
+function renderTree(videoInfo,analysis){
+  var h='<div class="tree">';
+
+  // 뿌리 (영상 정보)
+  h+='<div class="tree-root">';
+  if(videoInfo&&videoInfo.thumbnail)h+='<img src="'+esc(videoInfo.thumbnail)+'" style="width:100%;max-width:480px;height:auto;border-radius:10px;margin-bottom:14px;border:1px solid var(--border)">';
+  h+='<div class="root-title">'+esc(videoInfo?videoInfo.title:'YouTube 영상')+'</div>';
+  if(videoInfo&&videoInfo.channel)h+='<div class="root-channel">'+esc(videoInfo.channel)+'</div>';
+  h+='<div class="root-stats">';
+  if(videoInfo)h+='<div class="root-stat">\ud83d\udc41 <span class="num">'+(videoInfo.viewCount||0).toLocaleString()+'</span></div>';
+  if(videoInfo)h+='<div class="root-stat">\ud83d\udc4d <span class="num">'+(videoInfo.likeCount||0).toLocaleString()+'</span></div>';
+  h+='<div class="root-stat">\ud83d\udcac <span class="num">'+(analysis.totalAnalyzed||0)+'</span>개 분석</div>';
+  h+='</div>';
+  if(analysis.overallSummary)h+='<div class="root-summary">'+esc(analysis.overallSummary)+'</div>';
+  if(analysis.videoInsight)h+='<div class="root-insight">\ud83e\udd16 '+esc(analysis.videoInsight)+'</div>';
+  h+='</div>';
+
+  // 줄기
+  h+='<div class="tree-trunk"></div>';
+
+  // 가지
+  h+='<div class="tree-branches">';
+  analysis.categories.forEach(function(cat,ci){
+    var dotColor=getDotColor(cat.type);
+    var emoji=getEmoji(cat.type);
+    h+='<div class="tree-branch">';
+    // 가지 줄기
+    h+='<div class="branch-stem" style="background:'+dotColor+'"></div>';
+    // 가지 노드
+    h+='<div class="branch-node" id="bnode'+ci+'" onclick="toggleBranch('+ci+')">';
+    h+='<div class="branch-dot" style="background:'+dotColor+';color:'+dotColor+'"></div>';
+    h+='<span class="branch-name">'+emoji+' '+esc(cat.name)+'</span>';
+    h+='<span class="branch-count">'+(cat.subCategories?cat.subCategories.reduce(function(a,s){return a+(s.comments?s.comments.length:0)},0):0)+'개</span>';
+    if(cat.summary)h+='<div class="branch-summary">'+esc(cat.summary)+'</div>';
+    h+='<div class="branch-arrow">\u25bc</div>';
+    h+='</div>';
+    // 잎 (댓글)
+    h+='<div class="branch-leaves" id="bleaves'+ci+'">';
+    if(cat.subCategories){
+      cat.subCategories.forEach(function(sub,si){
+        h+='<div class="branch-sub">';
+        h+='<div class="branch-sub-name" onclick="toggleSub('+ci+','+si+')">'+esc(sub.name)+'<span class="sub-arrow">\u25b6</span></div>';
+        h+='<div class="branch-sub-comments" id="bsub'+ci+'_'+si+'">';
+        if(sub.comments){
+          sub.comments.forEach(function(c){
+            h+='<div class="leaf-comment">\ud83c\udf3f '+esc(c)+'</div>';
+          });
+        }
+        h+='</div></div>';
+      });
+    }
     h+='</div></div>';
-  }
-  if(analysis.overallSummary)h+='<div class="summary-text">'+esc(analysis.overallSummary)+'</div>';
-  if(analysis.videoInsight)h+='<div style="margin-top:10px;padding:12px 16px;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid var(--border);font-size:13px;color:var(--text2);line-height:1.7">🤖 '+esc(analysis.videoInsight)+'</div>';
-  h+='<div class="summary-stats">';
-  h+='<div class="stat-chip">📊 총 <span class="num">'+(analysis.totalAnalyzed||0)+'</span>개 분석</div>';
-  h+='<div class="stat-chip">🏷️ <span class="num">'+analysis.categories.length+'</span>개 카테고리</div>';
+  });
+  h+='</div>';
+
+  // 통계
+  h+='<div class="tree-stats">';
+  h+='<div class="tree-stat">\ud83c\udfaf 총 <span class="num">'+analysis.categories.length+'</span>개 가지</div>';
+  h+='<div class="tree-stat">\ud83c\udf3f 총 <span class="num">'+(analysis.categories.reduce(function(a,cat){return a+(cat.subCategories?cat.subCategories.reduce(function(b,s){return b+(s.comments?s.comments.length:0)},0):0)},0))+'</span>개 댓글</div>';
   h+='</div></div>';
   return h;
 }
 
-function renderCards(analysis){
-  var h='';
-  analysis.categories.forEach(function(cat,ci){
-    var dot=getDotClass(cat.type);
-    var emoji=getTypeEmoji(cat.type);
-    h+='<div class="sentiment-card" id="card'+ci+'">';
-    h+='<div class="card-header" onclick="toggleCard('+ci+')">';
-    h+='<div class="card-left">';
-    h+='<div class="card-dot '+dot+'"></div>';
-    h+='<div><div class="card-name">'+emoji+' '+esc(cat.name)+'</div>';
-    if(cat.summary)h+='<div class="card-summary">'+esc(cat.summary)+'</div>';
-    h+='</div></div>';
-    h+='<div style="display:flex;align-items:center;gap:10px"><span class="card-count">'+cat.count+'개</span><span class="card-arrow">▼</span></div>';
-    h+='</div>';
-    if(cat.comments&&cat.comments.length){
-      h+='<div class="comment-list" id="clist'+ci+'">';
-      cat.comments.forEach(function(c,ii){
-        h+='<div class="comment-item"><span class="comment-idx">#'+(ii+1)+'</span><span class="comment-text">'+esc(c)+'</span></div>';
-      });
-      h+='</div>';
-    }
-    h+='</div>';
-  });
-  return h;
-}
-
-// ===== 카드 토글 =====
-window.toggleCard=function(ci){
-  var card=document.getElementById('card'+ci);
-  var list=document.getElementById('clist'+ci);
-  if(!card||!list)return;
-  card.classList.toggle('open');
-  list.classList.toggle('active');
+// ===== 토글 =====
+window.toggleBranch=function(ci){
+  var node=document.getElementById('bnode'+ci);
+  var leaves=document.getElementById('bleaves'+ci);
+  if(!node||!leaves)return;
+  node.classList.toggle('open');
+  leaves.classList.toggle('open');
+};
+window.toggleSub=function(ci,si){
+  var el=document.getElementById('bsub'+ci+'_'+si);
+  var nameEl=el?el.previousElementSibling:null;
+  if(el)el.classList.toggle('open');
+  if(nameEl)nameEl.classList.toggle('open');
 };
 
-// ===== 메인 분석 함수 =====
+// ===== 분석 =====
 window.analyze=async function(){
   hideError();
   var url=document.getElementById('urlInput').value.trim();
   if(!url){showError('YouTube 링크를 입력해주세요.');return}
-
   var videoId=extractVideoId(url);
-  if(!videoId){showError('올바른 YouTube 링크를 입력해주세요. (youtube.com/watch?v=...)');return}
-
+  if(!videoId){showError('올바른 YouTube 링크를 입력해주세요.');return}
   var key=localStorage.getItem('oaiKey');
-  if(!key){showError('⚙️ 설정에서 OpenRouter API 키를 입력해주세요.');return}
+  if(!key){showError('\u2699\ufe0f 설정에서 OpenRouter API 키를 입력해주세요.');return}
 
-  var btn=document.getElementById('analyzeBtn');
-  btn.disabled=true;btn.textContent='분석 중...';
-  document.getElementById('summaryArea').innerHTML='';
-  document.getElementById('resultsArea').innerHTML='';
+  var btn=document.getElementById('analyzeBtn');btn.disabled=true;btn.textContent='분석 중...';
+  document.getElementById('treeArea').innerHTML='';
   document.getElementById('usageGuide').style.display='none';
 
   try{
-    showLoading(true);
-    updateLoading('영상 정보 불러오는 중...','YouTube에서 영상 정보를 가져옵니다',10);
-
+    showLoading(true);updateLoading('영상 정보 불러오는 중...',10);
     var videoInfo=await fetchVideoInfo(videoId);
-    updateLoading('AI 분석 중...','AI가 영상과 댓글 반응을 분석하고 있습니다',40);
-
+    updateLoading('AI가 나뭇가지를 만들고 있습니다...',40);
     var analysis=await analyzeWithAI(videoInfo,url);
     if(!analysis.totalAnalyzed)analysis.totalAnalyzed=videoInfo?(videoInfo.commentCount||0):0;
     analysis.categories.forEach(function(cat){
-      if(!cat.count)cat.count=Math.floor(Math.random()*50)+10;
+      if(!cat.count)cat.count=cat.subCategories?cat.subCategories.reduce(function(a,s){return a+(s.comments?s.comments.length:0)},0):0;
     });
-
-    updateLoading('결과 정리 중...','',90);
+    updateLoading('나무를 그리는 중...',85);
     await new Promise(function(r){setTimeout(r,300)});
-
-    document.getElementById('summaryArea').innerHTML=renderSummary(videoInfo,analysis);
-    document.getElementById('resultsArea').innerHTML=renderCards(analysis);
-
+    document.getElementById('treeArea').innerHTML=renderTree(videoInfo,analysis);
     showLoading(false);
-  }catch(e){
-    showLoading(false);
-    showError(e.message||'알 수 없는 오류가 발생했습니다.');
-  }finally{
-    btn.disabled=false;btn.textContent='🔍 분석하기';
-  }
+  }catch(e){showLoading(false);showError(e.message||'알 수 없는 오류')}
+  finally{btn.disabled=false;btn.textContent='\ud83d\udd0d 분석하기'}
 };
 
 })();
