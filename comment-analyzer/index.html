@@ -264,9 +264,7 @@ async function saveSettings(){
   if(oaiVal&&!oaiVal.startsWith("sk-or-")&&!oaiVal.startsWith("sk-")){showKeyStatus("OpenAI 키는 sk-로 시작합니다.","err");return}
   try{
     localStorage.setItem('ytKey',ytVal);localStorage.setItem('oaiKey',oaiVal);
-    var data=await res.json();
-    if(!res.ok)throw new Error(data.error||"저장 실패");
-    showKeyStatus("✅ "+data.message,"ok");
+    showKeyStatus('✅ API 키가 저장되었습니다.','ok');
     setTimeout(function(){toggleSettings()},1500);
   }catch(e){showKeyStatus("❌ "+e.message,"err")}
 }
