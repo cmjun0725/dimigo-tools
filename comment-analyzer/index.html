@@ -4,188 +4,223 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>댓글 분석기</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap');
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-@keyframes leafPop{from{transform:scaleY(0);opacity:0}to{transform:scaleY(1);opacity:1}}
-:root{--bg:#08080d;--surface:#12121c;--surface2:#1a1a2e;--surface3:#222238;--border:#2a2a45;--text:#f0f0f8;--text2:#8888a8;--text3:#555570;--accent:#6c5ce7;--accent2:#a29bfe;--accent-glow:rgba(108,92,231,.4);--positive:#00cec9;--negative:#ff6b6b;--neutral:#a29bfe;--info:#74b9ff;--warning:#ffeaa7;--radius:16px;--radius-sm:10px;--shadow:0 8px 32px rgba(0,0,0,.5)}
+:root{--bg:#08080d;--sf:#12121c;--sf2:#1a1a2e;--sf3:#222238;--bd:#2a2a45;--tx:#f0f0f8;--tx2:#8888a8;--tx3:#555570;--ac:#6c5ce7;--ac2:#a29bfe;--acg:rgba(108,92,231,.4);--pos:#00cec9;--neg:#ff6b6b;--neu:#a29bfe;--info:#74b9ff;--warn:#ffeaa7;--r:16px;--rs:10px;--sh:0 8px 32px rgba(0,0,0,.5)}
+[data-theme="light"]{--bg:#f5f5fa;--sf:#fff;--sf2:#eeeef5;--sf3:#dddde8;--bd:#ccc;--tx:#222;--tx2:#666;--tx3:#999;--sh:0 8px 32px rgba(0,0,0,.08)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Noto Sans KR','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+body{font-family:'Noto Sans KR','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;transition:background .3s,color .3s}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 10%,rgba(108,92,231,.06) 0%,transparent 50%),radial-gradient(ellipse at 80% 90%,rgba(0,206,201,.04) 0%,transparent 50%);pointer-events:none;z-index:0}
-.ctn{max-width:900px;margin:0 auto;padding:20px;position:relative;z-index:1}
-.hdr{text-align:center;padding:48px 0 32px;position:relative}
-.hdr-badge{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:30px;padding:6px 16px;font-size:12px;color:var(--text2);margin-bottom:16px}
-.hdr-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--positive);animation:pulse 2s infinite}
-.hdr h1{font-size:clamp(1.8em,5vw,2.4em);font-weight:900;background:linear-gradient(135deg,var(--accent2),var(--positive),var(--info));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
-.hdr p{color:var(--text2);font-size:15px;font-weight:300;max-width:420px;margin:0 auto}
-.sbtn{position:absolute;top:48px;right:0;background:var(--surface);border:1px solid var(--border);color:var(--text2);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1em;display:flex;align-items:center;justify-content:center;transition:all .25s}
-.sbtn:hover{border-color:var(--accent);color:var(--accent2)}
+[data-theme="light"] body::before{display:none}
+.ct{max-width:860px;margin:0 auto;padding:20px;position:relative;z-index:1}
+.hdr{text-align:center;padding:40px 0 28px;position:relative}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;max-width:860px;margin:0 auto 12px}
+.hdr-badge{display:inline-flex;align-items:center;gap:6px;background:var(--sf);border:1px solid var(--bd);border-radius:30px;padding:5px 14px;font-size:11px;color:var(--tx2)}
+.hdr-badge .dot{width:5px;height:5px;border-radius:50%;background:var(--pos);animation:pulse 2s infinite}
+.hdr h1{font-size:clamp(1.6em,5vw,2.2em);font-weight:900;background:linear-gradient(135deg,var(--ac2),var(--pos),var(--info));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.hdr p{color:var(--tx2);font-size:14px;font-weight:300;max-width:400px;margin:0 auto}
+.ib{background:var(--sf);border:1px solid var(--bd);color:var(--tx2);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:.9em;display:flex;align-items:center;justify-content:center;transition:all .25s}
+.ib:hover{border-color:var(--ac);color:var(--ac2)}
+/* Settings */
 .sov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;backdrop-filter:blur(8px)}
 .sov.active{display:flex;align-items:center;justify-content:center;animation:fadeIn .2s ease}
-.sbx{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;width:92%;max-width:440px;box-shadow:0 16px 64px rgba(0,0,0,.6);animation:slideUp .3s ease}
-.sbx h2{font-size:1.2em;margin-bottom:20px;color:var(--accent2)}
-.sbx label{display:block;font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px;margin-top:16px}
-.sbx input{width:100%;padding:12px 16px;background:var(--bg);border:2px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:all .25s}
-.sbx input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
-.sbx .hint{font-size:11px;color:var(--text3);margin-top:5px}
-.sbx .brow{display:flex;gap:10px;margin-top:22px}
-.sbx button{flex:1;padding:11px;border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:700;font-family:inherit;transition:all .2s}
-.bcl{background:var(--surface2);color:var(--text2);border:1px solid var(--border)!important}
-.bsv{background:linear-gradient(135deg,var(--accent),#8b5cf6);color:#fff}
-#ks{margin-top:12px;padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;display:none}
-.isec{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px;box-shadow:var(--shadow);animation:slideUp .5s ease}
-.irow{display:flex;gap:10px}
-.irow input{flex:1;padding:14px 20px;background:var(--bg);border:2px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:15px;font-family:inherit;outline:none;transition:all .25s}
-.irow input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
-.irow input::placeholder{color:var(--text3)}
-.abtn{padding:14px 28px;background:linear-gradient(135deg,var(--accent),#8b5cf6);border:none;border-radius:var(--radius-sm);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .25s;white-space:nowrap}
-.abtn:hover{box-shadow:0 4px 20px var(--accent-glow);transform:translateY(-1px)}
-.abtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.ahint{text-align:center;margin-top:10px;font-size:12px;color:var(--text3)}
-.ug{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px;animation:slideUp .5s ease .1s both}
-.ug h3{font-size:15px;font-weight:700;margin-bottom:16px}
-.ugrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.uit{background:var(--surface2);border-radius:10px;padding:14px}
-.uit .ut{font-size:13px;font-weight:600;margin-bottom:6px}
-.uit .ud{font-size:12px;color:var(--text2);line-height:1.5}
-.emsg{background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.2);border-radius:var(--radius-sm);padding:14px 18px;color:var(--negative);font-size:14px;margin-bottom:20px;display:none}
-.emsg.active{display:flex;align-items:center;gap:8px}
-.ld{display:none;text-align:center;padding:48px 20px;animation:fadeIn .3s ease}
+.sbx{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:28px;width:92%;max-width:420px;box-shadow:0 16px 64px rgba(0,0,0,.6);animation:slideUp .3s ease}
+.sbx h2{font-size:1.1em;margin-bottom:16px;color:var(--ac2)}
+.sbx label{display:block;font-size:12px;font-weight:600;color:var(--tx2);margin-bottom:5px;margin-top:12px}
+.sbx input{width:100%;padding:10px 14px;background:var(--bg);border:2px solid var(--bd);border-radius:var(--rs);color:var(--tx);font-size:13px;font-family:inherit;outline:none;transition:all .25s}
+.sbx input:focus{border-color:var(--ac)}
+.sbx .hint{font-size:10px;color:var(--tx3);margin-top:3px}
+.sbx .brow{display:flex;gap:8px;margin-top:16px}
+.sbx button{flex:1;padding:10px;border:none;border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;transition:all .2s}
+.bcl{background:var(--sf2);color:var(--tx2);border:1px solid var(--bd)!important}
+.bsv{background:linear-gradient(135deg,var(--ac),#8b5cf6);color:#fff}
+#ks{margin-top:10px;padding:8px 12px;border-radius:var(--rs);font-size:11px;display:none}
+/* Input */
+.is{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:20px;margin-bottom:16px;box-shadow:var(--sh);animation:slideUp .4s ease}
+.ir{display:flex;gap:8px}
+.ir input{flex:1;padding:12px 16px;background:var(--bg);border:2px solid var(--bd);border-radius:var(--rs);color:var(--tx);font-size:14px;font-family:inherit;outline:none;transition:all .25s}
+.ir input:focus{border-color:var(--ac)}
+.ir input::placeholder{color:var(--tx3)}
+.ab{padding:12px 24px;background:linear-gradient(135deg,var(--ac),#8b5cf6);border:none;border-radius:var(--rs);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .25s;white-space:nowrap}
+.ab:hover{box-shadow:0 4px 16px var(--acg);transform:translateY(-1px)}
+.ab:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.ah{text-align:center;margin-top:8px;font-size:11px;color:var(--tx3)}
+/* Usage */
+.ug{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:20px;margin-bottom:16px;animation:slideUp .4s ease .1s both}
+.ug h3{font-size:14px;font-weight:700;margin-bottom:12px}
+.ugrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.uit{background:var(--sf2);border-radius:8px;padding:12px}
+.uit .ut{font-size:12px;font-weight:600;margin-bottom:4px}
+.uit .ud{font-size:11px;color:var(--tx2);line-height:1.5}
+/* Error/Loading */
+.em{background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.2);border-radius:var(--rs);padding:12px 16px;color:var(--neg);font-size:13px;margin-bottom:16px;display:none}
+.em.active{display:flex;align-items:center;gap:6px}
+.ld{display:none;text-align:center;padding:40px 20px;animation:fadeIn .3s ease}
 .ld.active{display:block}
-.ld .sp{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 16px}
-.ld p{color:var(--text2);font-size:14px}
-.ld .pg{width:200px;height:4px;background:var(--surface2);border-radius:2px;margin:12px auto 0;overflow:hidden}
-.ld .pb{height:100%;background:linear-gradient(90deg,var(--accent),var(--positive));border-radius:2px;transition:width .5s;width:0%}
+.ld .sp{width:36px;height:36px;border:3px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px}
+.ld p{color:var(--tx2);font-size:13px}
+.ld .pg{width:180px;height:3px;background:var(--sf2);border-radius:2px;margin:10px auto 0;overflow:hidden}
+.ld .pb{height:100%;background:linear-gradient(90deg,var(--ac),var(--pos));border-radius:2px;transition:width .5s;width:0%}
+/* Comment list */
+.cl{margin-top:16px}
+.cl-title{font-size:13px;font-weight:700;color:var(--ac2);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.cl-item{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd);font-size:12px;line-height:1.5}
+.cl-item:last-child{border-bottom:none}
+.cl-idx{color:var(--ac2);font-weight:700;min-width:20px;flex-shrink:0}
+.cl-author{font-weight:600;color:var(--tx3);font-size:10px}
+.cl-text{color:var(--tx);flex:1}
+.cl-likes{color:var(--tx3);font-size:10px;white-space:nowrap}
 /* Tree */
-.tree{padding:20px 0;animation:slideUp .5s ease}
-.troot{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;text-align:center;position:relative;box-shadow:var(--shadow)}
-.troot img{width:100%;max-width:480px;height:auto;border-radius:10px;margin-bottom:14px;border:1px solid var(--border)}
-.troot .rt{font-size:18px;font-weight:900;margin-bottom:6px}
-.troot .rch{font-size:13px;color:var(--text2)}
-.troot .rs{display:flex;justify-content:center;gap:16px;margin-top:10px;flex-wrap:wrap}
-.troot .rs span{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:4px}
-.troot .rs .n{color:var(--accent2);font-weight:700}
-.troot .rsum{margin-top:12px;font-size:13px;color:var(--text2);line-height:1.7;max-width:600px;margin-left:auto;margin-right:auto}
-.troot .rins{margin-top:10px;padding:10px 14px;background:rgba(108,92,231,.06);border:1px solid rgba(108,92,231,.15);border-radius:var(--radius-sm);font-size:12px;color:var(--accent2);line-height:1.6}
-.ttrunk{width:4px;height:40px;background:linear-gradient(180deg,var(--accent),var(--accent2));margin:0 auto;border-radius:2px;opacity:.5}
-.tbranches{display:flex;justify-content:center;gap:0;flex-wrap:wrap;position:relative;padding-top:10px}
-.tbranches::before{content:'';position:absolute;top:0;left:50%;width:80%;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);transform:translateX(-50%);opacity:.3}
-.tbranch{flex:1;min-width:200px;max-width:280px;position:relative;padding:0 8px;margin-bottom:20px}
-.bstem{width:3px;height:30px;margin:0 auto;border-radius:2px;opacity:.4}
-.bnode{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;cursor:pointer;transition:all .3s;position:relative}
-.bnode:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
-.bnode.open{border-color:var(--accent)}
-.bdot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:8px;box-shadow:0 0 8px currentColor}
-.bname{font-size:14px;font-weight:700;display:inline}
-.bcnt{font-size:11px;color:var(--text3);margin-left:8px}
-.bsum{font-size:11px;color:var(--text3);margin-top:6px;line-height:1.5}
-.barr{position:absolute;top:16px;right:14px;font-size:11px;color:var(--text3);transition:transform .25s}
+.tree{padding:16px 0;animation:slideUp .4s ease}
+.troot{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:20px;text-align:center;box-shadow:var(--sh)}
+.troot img{width:100%;max-width:420px;height:auto;border-radius:8px;margin-bottom:12px;border:1px solid var(--bd)}
+.troot .rt{font-size:16px;font-weight:900;margin-bottom:4px}
+.troot .rch{font-size:12px;color:var(--tx2)}
+.troot .rs{display:flex;justify-content:center;gap:12px;margin-top:8px;flex-wrap:wrap}
+.troot .rs span{font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:3px}
+.troot .rs .n{color:var(--ac2);font-weight:700}
+.troot .rsum{margin-top:10px;font-size:12px;color:var(--tx2);line-height:1.7;max-width:560px;margin-left:auto;margin-right:auto}
+.troot .rins{margin-top:8px;padding:8px 12px;background:rgba(108,92,231,.06);border:1px solid rgba(108,92,231,.15);border-radius:var(--rs);font-size:11px;color:var(--ac2);line-height:1.5}
+.ttrunk{width:3px;height:32px;background:linear-gradient(180deg,var(--ac),var(--ac2));margin:0 auto;border-radius:2px;opacity:.4}
+.tbranches{display:flex;justify-content:center;gap:0;flex-wrap:wrap;position:relative;padding-top:8px}
+.tbranches::before{content:'';position:absolute;top:0;left:50%;width:80%;height:2px;background:linear-gradient(90deg,transparent,var(--ac),transparent);transform:translateX(-50%);opacity:.25}
+.tbranch{flex:1;min-width:180px;max-width:260px;position:relative;padding:0 6px;margin-bottom:16px}
+.bstem{width:2px;height:24px;margin:0 auto;border-radius:2px;opacity:.35}
+.bnode{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);padding:14px;cursor:pointer;transition:all .3s;position:relative}
+.bnode:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.bnode.open{border-color:var(--ac)}
+.bdot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;box-shadow:0 0 6px currentColor}
+.bname{font-size:13px;font-weight:700;display:inline}
+.bcnt{font-size:10px;color:var(--tx3);margin-left:6px}
+.bsum{font-size:10px;color:var(--tx3);margin-top:4px;line-height:1.4}
+.barr{position:absolute;top:14px;right:12px;font-size:10px;color:var(--tx3);transition:transform .25s}
 .bnode.open .barr{transform:rotate(180deg)}
-.bleaves{display:none;padding:0 8px;margin-top:8px}
+.bleaves{display:none;padding:0 6px;margin-top:6px}
 .bleaves.open{display:block}
-.bsub{margin-bottom:6px}
-.bsn{font-size:12px;font-weight:600;color:var(--text2);padding:6px 10px;background:var(--surface2);border-radius:6px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
-.bsn:hover{background:var(--surface3);color:var(--text)}
-.bsn .sa{font-size:10px;transition:transform .2s;margin-left:auto}
+.bsub{margin-bottom:4px}
+.bsn{font-size:11px;font-weight:600;color:var(--tx2);padding:5px 8px;background:var(--sf2);border-radius:5px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:4px}
+.bsn:hover{background:var(--sf3);color:var(--tx)}
+.bsn .sa{font-size:8px;transition:transform .2s;margin-left:auto}
 .bsn.open .sa{transform:rotate(90deg)}
-.bsc{display:none;padding:6px 0 6px 16px}
+.bsc{display:none;padding:4px 0 4px 14px}
 .bsc.open{display:block}
-.lc{padding:8px 10px;font-size:12px;color:var(--text2);line-height:1.6;border-left:2px solid var(--border);margin-bottom:4px}
-.lc:nth-child(1){animation-delay:.05s}.lc:nth-child(2){animation-delay:.1s}.lc:nth-child(3){animation-delay:.15s}.lc:nth-child(4){animation-delay:.2s}
-.tstats{display:flex;justify-content:center;gap:12px;margin-top:20px;flex-wrap:wrap}
-.tst{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:8px 16px;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:6px}
-.tst .n{font-weight:700;color:var(--accent2)}
-@media(max-width:600px){.hdr{padding:32px 0 20px}.ugrid{grid-template-columns:1fr}.irow{flex-direction:column}.irow input,.abtn{width:100%}.tbranches{flex-direction:column;align-items:center}.tbranch{min-width:100%;max-width:100%}}
+.lc{padding:6px 8px;font-size:11px;color:var(--tx2);line-height:1.5;border-left:2px solid var(--bd);margin-bottom:3px}
+.lc .la{font-weight:600;color:var(--tx3);font-size:9px}
+.tstats{display:flex;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap}
+.tst{background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:5px 12px;font-size:11px;color:var(--tx2);display:flex;align-items:center;gap:4px}
+.tst .n{font-weight:700;color:var(--ac2)}
+/* Toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rs);padding:8px 16px;font-size:12px;color:var(--tx);box-shadow:var(--sh);z-index:300;transition:transform .3s;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media(max-width:600px){.hdr{padding:28px 0 16px}.ugrid{grid-template-columns:1fr}.ir{flex-direction:column}.ir input,.ab{width:100%}.tbranches{flex-direction:column;align-items:center}.tbranch{min-width:100%;max-width:100%}}
 </style>
 </head>
 <body>
-<div class="ctn">
+<div class="ct">
   <div class="hdr">
-    <div class="hdr-badge"><span class="dot"></span>AI 기반 실시간 분석</div>
-    <h1>댓글 분석기</h1>
-    <p>YouTube 영상 링크를 붙여넣으면 AI가 댓글을 나뭇가지처럼 분석해 드립니다</p>
-    <button class="sbtn" onclick="toggleSettings()">&#9881;</button>
-  </div>
-  <div class="isec">
-    <div class="irow">
-      <input type="text" id="urlInput" placeholder="YouTube 영상 링크를 붙여넣으세요..." onkeydown="if(event.key==='Enter')doAnalyze()" spellcheck="false">
-      <button class="abtn" id="analyzeBtn" onclick="doAnalyze()">&#128269; 분석하기</button>
+    <div class="hdr-top">
+      <div class="hdr-badge"><span class="dot"></span>AI 기반 댓글 분석</div>
+      <div style="display:flex;gap:6px">
+        <button class="ib" onclick="toggleTheme()" id="themeBtn" title="다크/라이트">&#127769;</button>
+        <button class="ib" onclick="toggleSettings()" title="API 설정">&#9881;</button>
+      </div>
     </div>
-    <p class="ahint">&#9881; 버튼에서 OpenRouter API 키를 설정해주세요</p>
+    <h1>댓글 분석기</h1>
+    <p>YouTube 영상 링크를 붙여넣으면 AI가 댓글을 분석합니다</p>
+  </div>
+  <div class="is">
+    <div class="ir">
+      <input type="text" id="urlInput" placeholder="YouTube 영상 링크를 붙여넣으세요..." onkeydown="if(event.key==='Enter')doAnalyze()" spellcheck="false">
+      <button class="ab" id="analyzeBtn" onclick="doAnalyze()">&#128269; 분석하기</button>
+    </div>
+    <p class="ah">&#9881;에서 YouTube Data API 키 + OpenRouter API 키를 설정해주세요</p>
   </div>
   <div class="ug" id="usageGuide">
     <h3>&#128214; 사용법</h3>
     <div class="ugrid">
-      <div class="uit"><div class="ut" style="color:var(--positive)">1. 링크 입력</div><div class="ud">YouTube 영상 URL을 복사해서 붙여넣으세요</div></div>
-      <div class="uit"><div class="ut" style="color:var(--info)">2. AI 분석</div><div class="ud">AI가 영상을 분석하여 나뭇가지 형태로 분류합니다</div></div>
-      <div class="uit"><div class="ut" style="color:var(--accent2)">3. 가지 확장</div><div class="ud">카테고리 클릭 &#8594; 세부분류 클릭 &#8594; 댓글 확인</div></div>
-      <div class="uit"><div class="ut" style="color:var(--warning)">4. API 키</div><div class="ud">&#9881;에서 OpenRouter 키 입력 (openrouter.ai/keys)</div></div>
+      <div class="uit"><div class="ut" style="color:var(--pos)">1. API 키 설정</div><div class="ud">&#9881;에서 YouTube Data API 키와 OpenRouter 키를 입력하세요</div></div>
+      <div class="uit"><div class="ut" style="color:var(--info)">2. 링크 입력</div><div class="ud">YouTube 영상 URL을 복사해서 붙여넣으세요</div></div>
+      <div class="uit"><div class="ut" style="color:var(--ac2)">3. AI 분석</div><div class="ud">AI가 실제 댓글을 감정별로 분류합니다</div></div>
+      <div class="uit"><div class="ut" style="color:var(--warn)">4. 결과 확인</div><div class="ud">나뭇가지 형태로 펼쳐서 댓글 확인</div></div>
     </div>
   </div>
-  <div class="emsg" id="errorMsg"></div>
+  <div class="em" id="errorMsg"></div>
   <div class="ld" id="loading"><div class="sp"></div><p id="loadingText">분석을 시작합니다...</p><div class="pg"><div class="pb" id="progressBar"></div></div></div>
   <div id="treeArea"></div>
 </div>
 <div class="sov" id="settingsOverlay" onclick="if(event.target===this)toggleSettings()">
   <div class="sbx">
     <h2>&#9881; API 설정</h2>
-    <label>&#128273; OpenRouter API 키</label>
+    <label>&#127909; YouTube Data API 키</label>
+    <input type="password" id="ytKeyInput" placeholder="AIzaSy..." autocomplete="off">
+    <div class="hint">Google Cloud Console에서 발급 (console.cloud.google.com)</div>
+    <label>&#129302; OpenRouter API 키</label>
     <input type="password" id="oaiKeyInput" placeholder="sk-or-..." autocomplete="off">
     <div class="hint">OpenRouter에서 발급 (openrouter.ai/keys)</div>
     <div id="ks"></div>
     <div class="brow"><button class="bcl" onclick="toggleSettings()">닫기</button><button class="bsv" onclick="saveSettings()">&#128190; 저장</button></div>
   </div>
 </div>
+<div class="toast" id="toast"></div>
 <script>
 (function(){
-function toggleSettings(){var ov=document.getElementById('settingsOverlay');ov.classList.toggle('active');if(ov.classList.contains('active')){var k=localStorage.getItem('oaiKey')||'';document.getElementById('oaiKeyInput').value=k;showKS(k?'현재 상태: OpenAI &#10004; '+k.substring(0,8)+'...':'OpenRouter API 키가 설정되지 않았습니다.',k?'ok':'err')}}
-function saveSettings(){var v=document.getElementById('oaiKeyInput').value.trim();if(!v){showKS('API 키를 입력해주세요.','err');return}if(!v.startsWith('sk-or-')&&!v.startsWith('sk-')){showKS('키는 sk-로 시작해야 합니다.','err');return}if(v.length<10){showKS('키가 너무 짧습니다.','err');return}localStorage.setItem('oaiKey',v);showKS('&#10004; 저장 완료!','ok');setTimeout(function(){toggleSettings()},1200)}
-function showKS(m,t){var s=document.getElementById('ks');s.textContent=m;s.style.display='block';s.style.background=t==='ok'?'rgba(0,206,201,.08)':'rgba(255,107,107,.08)';s.style.color=t==='ok'?'var(--positive)':'var(--negative)';s.style.border='1px solid '+(t==='ok'?'rgba(0,206,201,.2)':'rgba(255,107,107,.2)');s.style.borderRadius='var(--radius-sm)';s.style.padding='10px 14px';s.style.fontSize='13px'}
+function toggleTheme(){var d=document.documentElement;var c=d.getAttribute('data-theme');d.setAttribute('data-theme',c==='light'?'dark':'light');document.getElementById('themeBtn').textContent=c==='light'?'&#127769;':'&#9728;';localStorage.setItem('theme',c==='light'?'dark':'light')}
+var st=localStorage.getItem('theme');if(st)document.documentElement.setAttribute('data-theme',st);document.getElementById('themeBtn').textContent=st==='light'?'&#9728;':'&#127769;';
+function toggleSettings(){var ov=document.getElementById('settingsOverlay');ov.classList.toggle('active');if(ov.classList.contains('active')){var yk=localStorage.getItem('ytKey')||'';var ok=localStorage.getItem('oaiKey')||'';document.getElementById('ytKeyInput').value=yk;document.getElementById('oaiKeyInput').value=ok;var msgs=[];msgs.push('YouTube: '+(yk?(yk.substring(0,6)+'...'):'미설정'));msgs.push('OpenRouter: '+(ok?(ok.substring(0,8)+'...'):'미설정'));showKS(msgs.join(' | '),'info')}}
+function saveSettings(){var yk=document.getElementById('ytKeyInput').value.trim();var ok=document.getElementById('oaiKeyInput').value.trim();var changed=false;if(yk){if(!yk.startsWith('AIza')){showKS('YouTube 키는 AIza로 시작합니다.','err');return}if(yk.length<10){showKS('YouTube 키가 너무 짧습니다.','err');return}localStorage.setItem('ytKey',yk);changed=true}else{localStorage.removeItem('ytKey');changed=true}if(ok){if(!ok.startsWith('sk-or-')&&!ok.startsWith('sk-')){showKS('OpenRouter 키는 sk-로 시작합니다.','err');return}if(ok.length<10){showKS('OpenRouter 키가 너무 짧습니다.','err');return}localStorage.setItem('oaiKey',ok);changed=true}else{localStorage.removeItem('oaiKey');changed=true}if(changed){showKS('&#10004; 저장 완료!','ok');setTimeout(function(){toggleSettings()},1000)}}
+function showKS(m,t){var s=document.getElementById('ks');s.textContent=m;s.style.display='block';s.style.background=t==='ok'?'rgba(0,206,201,.08)':t==='err'?'rgba(255,107,107,.08)':'rgba(108,92,231,.08)';s.style.color=t==='ok'?'var(--pos)':t==='err'?'var(--neg)':'var(--ac2)';s.style.border='1px solid '+(t==='ok'?'rgba(0,206,201,.2)':t==='err'?'rgba(255,107,107,.2)':'rgba(108,92,231,.2)');s.style.borderRadius='var(--rs)';s.style.padding='8px 10px';s.style.fontSize='11px'}
 window.toggleSettings=toggleSettings;window.saveSettings=saveSettings;
 function showError(m){var e=document.getElementById('errorMsg');e.textContent=m;e.classList.add('active')}
 function hideError(){document.getElementById('errorMsg').classList.remove('active')}
 function showLd(s){document.getElementById('loading').classList.toggle('active',s)}
 function updateLd(t,p){if(t)document.getElementById('loadingText').textContent=t;if(p!==undefined)document.getElementById('progressBar').style.width=p+'%'}
 function esc(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2000)}
 
 function extractVideoId(url){if(!url)return null;try{var u=new URL(url.indexOf('?')>-1?url:'https://'+url);var v=u.searchParams.get('v');if(v&&v.length===11)return v;var segs=u.pathname.split('/').filter(Boolean);if(segs.length>0&&segs[segs.length-1].length===11)return segs[segs.length-1]}catch(e){}return null}
 
 async function fetchVideoInfo(videoId){
   var key=localStorage.getItem('ytKey');
-  if(!key)return{title:'YouTube 영상',channel:'',viewCount:0,likeCount:0,commentCount:0,thumbnail:'',description:''};
-  try{var res=await fetch('https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id='+videoId+'&key='+key);if(!res.ok)return{title:'YouTube 영상',channel:'',viewCount:0,likeCount:0,commentCount:0,thumbnail:'',description:''};var data=await res.json();if(!data.items||!data.items.length)return{title:'YouTube 영상',channel:'',viewCount:0,likeCount:0,commentCount:0,thumbnail:'',description:''};var s=data.items[0].snippet,st=data.items[0].statistics;return{title:s.title,channel:s.channelTitle,viewCount:parseInt(st.viewCount)||0,likeCount:parseInt(st.likeCount)||0,commentCount:parseInt(st.commentCount)||0,thumbnail:s.thumbnails.high?s.thumbnails.high.url:s.thumbnails.medium?s.thumbnails.medium.url:'',description:(s.description||'').substring(0,500)}}catch(e){return{title:'YouTube 영상',channel:'',viewCount:0,likeCount:0,commentCount:0,thumbnail:'',description:''}}}
+  if(!key)return null;
+  try{var res=await fetch('https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id='+videoId+'&key='+key);if(!res.ok)return null;var data=await res.json();if(!data.items||!data.items.length)return null;var s=data.items[0].snippet,st=data.items[0].statistics;return{title:s.title,channel:s.channelTitle,viewCount:parseInt(st.viewCount)||0,likeCount:parseInt(st.likeCount)||0,commentCount:parseInt(st.commentCount)||0,thumbnail:s.thumbnails.maxres?s.thumbnails.maxres.url:s.thumbnails.high?s.thumbnails.high.url:s.thumbnails.medium?s.thumbnails.medium.url:'',description:(s.description||'').substring(0,800)}}catch(e){return null}}
 
 async function fetchComments(videoId){
-  var key=localStorage.getItem('ytKey');if(!key)return null;
+  var key=localStorage.getItem('ytKey');if(!key)return[];
   var all=[],pageToken='',page=0;
-  while(all.length<100&&page<5){
-    var params='part=snippet&videoId='+videoId+'&key='+key+'&maxResults=50&order=relevance&textFormat=plainText';
-    if(pageToken)params+='&pageToken='+pageToken;
-    try{var res=await fetch('https://www.googleapis.com/youtube/v3/commentThreads?'+params);if(!res.ok)break;var data=await res.json();if(!data.items)break;for(var i=0;i<data.items.length;i++){var sn=data.items[i].snippet.topLevelComment.snippet;all.push({author:sn.authorDisplayName,text:sn.textDisplay,likes:sn.likeCount||0})}if(!data.nextPageToken)break;pageToken=data.nextPageToken;page++;updateLd('댓글 수집 중... ('+all.length+'개)',25+page*5)}catch(e){break}
+  while(all.length<150&&page<8){
+    var url='https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId='+videoId+'&key='+key+'&maxResults=100&order=relevance&textFormat=plainText';
+    if(pageToken)url+='&pageToken='+encodeURIComponent(pageToken);
+    try{var res=await fetch(url);if(!res.ok){var err=await res.json().catch(function(){return{}});console.log('YouTube API error:',res.status,err);break}var data=await res.json();if(!data.items||data.items.length===0)break;for(var i=0;i<data.items.length;i++){var sn=data.items[i].snippet.topLevelComment.snippet;all.push({author:sn.authorDisplayName,text:sn.textDisplay.replace(/<[^>]*>/g,''),likes:sn.likeCount||0,date:sn.publishedAt.substring(0,10)})}if(!data.nextPageToken)break;pageToken=data.nextPageToken;page++;updateLd('댓글 수집 중... ('+all.length+'개)',20+page*8)}catch(e){console.log('Comment fetch error:',e);break}
   }
-  return all.length>0?all:null;
+  return all;
 }
 
 async function analyzeWithAI(videoInfo,url,comments){
-  var key=localStorage.getItem('oaiKey');if(!key)throw new Error('API 키가 없습니다.');
-  var ctx=videoInfo&&videoInfo.title!=='YouTube 영상'?('영상 제목: '+videoInfo.title+'\n채널: '+videoInfo.channel+'\n조회수: '+videoInfo.viewCount.toLocaleString()+'\n좋아요: '+videoInfo.likeCount.toLocaleString()+'\n댓글 수: '+videoInfo.commentCount.toLocaleString()):('YouTube 영상: '+url);
-  var commentBlock='';
-  if(comments&&comments.length>0){commentBlock='\n\n실제 댓글 목록 (아래 댓글들을 원문 그대로 사용하세요):\n'+comments.map(function(c,i){return('['+(i+1)+'] ('+c.author+', 좋아요:'+c.likes+') '+c.text)}).join('\n')}
-  var prompt='당신은 YouTube 댓글 분석 전문가입니다. 아래 댓글들을 나뭇가지(tree) 구조로 분류해주세요.\n\n'+ctx+commentBlock+'\n\n규칙:\n1. 반드시 아래 JSON으로만 응답\n2. categories 배열: 3~6개 카테고리\n3. 각 카테고리에 subCategories 배열: 2~4개 세부분류\n4. 각 세부분류의 comments 배열에 실제 댓글 원문을 그대로 복사하세요 (수정 금지)\n5. type은 positive, negative, neutral, question, suggestion 중 하나\n6. 댓글이 없으면 AI가 예상하는 반응을 생성\n\nJSON:\n{"categories":[{"name":"카테고리","type":"positive","summary":"한줄요약","subCategories":[{"name":"세부","comments":["실제댓글원문1","실제댓글원문2"]}]}],"totalAnalyzed":0,"overallSummary":"전체요약","videoInsight":"영상분석"}';
-  var res=await fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'openai/gpt-4o-mini',messages:[{role:'system',content:'YouTube 댓글 분석 전문가. 반드시 JSON으로만 응답. 한국어. 댓글 원문을 그대로 복사하여 분류하세요.'},{role:'user',content:prompt}],temperature:0.3,max_tokens:4000})});
+  var key=localStorage.getItem('oaiKey');if(!key)throw new Error('OpenRouter API 키가 없습니다.');
+  var hasRealComments=comments&&comments.length>0;
+  var ctx='';if(videoInfo){ctx='영상 제목: '+videoInfo.title+'\n채널: '+videoInfo.channel+'\n조회수: '+videoInfo.viewCount.toLocaleString()+'\n좋아요: '+videoInfo.likeCount.toLocaleString()+'\n댓글 수: '+videoInfo.commentCount.toLocaleString()+'\n설명: '+(videoInfo.description||'').substring(0,600)}else{ctx='YouTube 영상 URL: '+url}
+  var commentSection='';
+  if(hasRealComments){commentSection='\n\n===실제댓글===\n'+comments.map(function(c,i){return'['+(i+1)+'] '+c.author+' (좋아요:'+c.likes+') '+c.text}).join('\n')+'\n===끝==='}
+  var instruction=hasRealComments?
+    '위 댓글들은 YouTube에서 실제로 수집한 것입니다. 아래 규칙을 지켜주세요:\n1. comments 배열에 위 댓글 원문을 그대로 복사하세요 (절대 수정하거나 만들지 마세요)\n2. 각 댓글을 적절한 카테고리로 분류하세요\n3. subCategories도 만들 수 있습니다':
+    '댓글을 수집할 수 없었습니다. 영상 정보를 바탕으로 예상되는 댓글 반응을 생성해주세요.';
+  var prompt='YouTube 댓글 분석 전문가입니다. 아래 영상의 댓글을 나뭇가지(tree) 구조로 분석하세요.\n\n'+ctx+commentSection+'\n\n'+instruction+'\n\n규칙:\n1. 반드시 아래 JSON으로만 응답\n2. categories: 3~6개 (type: positive/negative/neutral/question/suggestion)\n3. subCategories: 각 카테고리별 2~4개\n4. comments: 댓글 원문 그대로 (실제댓글이 있으면 반드시 실제것만 사용)\n5. totalAnalyzed: 실제 분석한 댓글 수\n\nJSON:\n{"categories":[{"name":"카테고리","type":"positive","summary":"한줄요약","subCategories":[{"name":"세부","comments":["댓글원문1","댓글원문2"]}]}],"totalAnalyzed":0,"overallSummary":"전체요약","videoInsight":"영상분석"}';
+  var res=await fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'openai/gpt-4o-mini',messages:[{role:'system',content:'YouTube 댓글 분석 전문가. 반드시 JSON으로만 응답. 한국어. 실제 댓글 원문을 그대로 복사하여 분류하세요.'},{role:'user',content:prompt}],temperature:0.2,max_tokens:4000})});
   if(!res.ok){var err=await res.json().catch(function(){return{}});throw new Error(err&&err.error?err.error.message:'API 오류 ('+res.status+')')}
   var data=await res.json();var content=data.choices[0].message.content;
   var m=content.match(/\{[\s\S]*\}/);if(!m)throw new Error('JSON 파싱 실패');
   return JSON.parse(m[0]);
 }
 
-function dotColor(t){if(!t)return'var(--neutral)';if(t==='positive')return'var(--positive)';if(t==='negative')return'var(--negative)';if(t==='question')return'var(--info)';if(t==='suggestion')return'var(--warning)';return'var(--neutral)'}
-function emoji(t){if(!t)return'\ud83d\ude10';if(t==='positive')return'\ud83d\ude0a';if(t==='negative')return'\ud83d\ude20';if(t==='question')return'\u2753';if(t==='suggestion')return'\ud83d\udca1';return'\ud83d\ude10'}
+function dotC(t){if(!t)return'var(--neu)';if(t==='positive')return'var(--pos)';if(t==='negative')return'var(--neg)';if(t==='question')return'var(--info)';if(t==='suggestion')return'var(--warn)';return'var(--neu)'}
+function emo(t){if(!t)return'\ud83d\ude10';if(t==='positive')return'\ud83d\ude0a';if(t==='negative')return'\ud83d\ude20';if(t==='question')return'\u2753';if(t==='suggestion')return'\ud83d\udca1';return'\ud83d\ude10'}
 
-function renderTree(videoInfo,analysis){
+function renderTree(videoInfo,analysis,commentCount){
   var h='<div class="tree">';
   h+='<div class="troot">';
   if(videoInfo&&videoInfo.thumbnail)h+='<img src="'+esc(videoInfo.thumbnail)+'">';
@@ -194,14 +229,13 @@ function renderTree(videoInfo,analysis){
   h+='<div class="rs">';
   if(videoInfo)h+='<span>\ud83d\udc41 <span class="n">'+(videoInfo.viewCount||0).toLocaleString()+'</span></span>';
   if(videoInfo)h+='<span>\ud83d\udc4d <span class="n">'+(videoInfo.likeCount||0).toLocaleString()+'</span></span>';
-  h+='<span>\ud83d\udcac <span class="n">'+(analysis.totalAnalyzed||0)+'</span>개 분석</span></div>';
+  h+='<span>\ud83d\udcac <span class="n">'+commentCount+'</span>개 분석</span></div>';
   if(analysis.overallSummary)h+='<div class="rsum">'+esc(analysis.overallSummary)+'</div>';
   if(analysis.videoInsight)h+='<div class="rins">\ud83e\udd16 '+esc(analysis.videoInsight)+'</div>';
-  h+='</div>';
-  h+='<div class="ttrunk"></div>';
+  h+='</div><div class="ttrunk"></div>';
   h+='<div class="tbranches">';
   analysis.categories.forEach(function(cat,ci){
-    var dc=dotColor(cat.type);var em=emoji(cat.type);
+    var dc=dotC(cat.type);var em=emo(cat.type);
     var cnt=0;if(cat.subCategories)cat.subCategories.forEach(function(s){if(s.comments)cnt+=s.comments.length});
     h+='<div class="tbranch"><div class="bstem" style="background:'+dc+'"></div>';
     h+='<div class="bnode" id="bn'+ci+'" onclick="toggleBr('+ci+')">';
@@ -213,17 +247,26 @@ function renderTree(videoInfo,analysis){
     if(cat.subCategories){cat.subCategories.forEach(function(sub,si){
       h+='<div class="bsub"><div class="bsn" onclick="toggleSub('+ci+','+si+')">'+esc(sub.name)+'<span class="sa">&#9654;</span></div>';
       h+='<div class="bsc" id="bs'+ci+'_'+si+'">';
-      if(sub.comments)sub.comments.forEach(function(c){h+='<div class="lc">\ud83c\udf3f '+esc(c)+'</div>'});
+      if(sub.comments)sub.comments.forEach(function(c){h+='<div class="lc"><span class="la">\ud83c\udf3f</span> '+esc(c)+'</div>'});
       h+='</div></div>';
     })}
     h+='</div></div>';
   });
   h+='</div>';
-  h+='<div class="tstats">';
-  h+='<div class="tst">\ud83c\udfaf 총 <span class="n">'+analysis.categories.length+'</span>개 가지</div>';
-  var totalCmts=0;analysis.categories.forEach(function(cat){if(cat.subCategories)cat.subCategories.forEach(function(s){if(s.comments)totalCmts+=s.comments.length})});
-  h+='<div class="tst">\ud83c\udf3f 총 <span class="n">'+totalCmts+'</span>개 댓글</div></div></div>';
+  h+='<div class="tstats"><div class="tst">\ud83c\udfaf <span class="n">'+analysis.categories.length+'</span>개 가지</div>';
+  var tc=0;analysis.categories.forEach(function(c){if(c.subCategories)c.subCategories.forEach(function(s){if(s.comments)tc+=s.comments.length})});
+  h+='<div class="tst">\ud83c\udf3f <span class="n">'+tc+'</span>개 댓글</div></div></div>';
   return h;
+}
+
+function renderCommentList(comments){
+  if(!comments||comments.length===0)return'';
+  var h='<div class="cl"><div class="cl-title">\ud83d\udcac 수집된 실제 댓글 ('+comments.length+'개)</div>';
+  comments.slice(0,30).forEach(function(c,i){
+    h+='<div class="cl-item"><span class="cl-idx">#'+(i+1)+'</span><div><div class="cl-author">'+esc(c.author)+' &middot; '+esc(c.date)+' &middot; \ud83d\udc4d '+c.likes+'</div><div class="cl-text">'+esc(c.text)+'</div></div></div>';
+  });
+  if(comments.length>30)h+='<div style="text-align:center;padding:8px;font-size:11px;color:var(--tx3)">... 외 '+comments.length-30+'개</div>';
+  h+='</div>';return h;
 }
 
 window.toggleBr=function(ci){var n=document.getElementById('bn'+ci);var l=document.getElementById('bl'+ci);if(n)n.classList.toggle('open');if(l)l.classList.toggle('open')};
@@ -235,24 +278,28 @@ window.doAnalyze=async function(){
   if(!url){showError('YouTube 링크를 입력해주세요.');return}
   var videoId=extractVideoId(url);
   if(!videoId){showError('올바른 YouTube 링크를 입력해주세요.');return}
-  var key=localStorage.getItem('oaiKey');
-  if(!key){showError('설정에서 OpenRouter API 키를 입력해주세요.');return}
+  var ytKey=localStorage.getItem('ytKey');
+  var oaiKey=localStorage.getItem('oaiKey');
+  if(!oaiKey){showError('OpenRouter API 키가 필요합니다. &#9881;에서 설정해주세요.');return}
+  if(!ytKey){showError('YouTube Data API 키가 필요합니다. &#9881;에서 설정해주세요. (console.cloud.google.com에서 발급)');return}
   var btn=document.getElementById('analyzeBtn');btn.disabled=true;btn.textContent='분석 중...';
   document.getElementById('treeArea').innerHTML='';document.getElementById('usageGuide').style.display='none';
   try{
     showLd(true);updateLd('영상 정보 불러오는 중...',10);
     var videoInfo=await fetchVideoInfo(videoId);
-    updateLd('댓글 수집 중...',20);
+    updateLd('댓글 수집 중... ('+(videoInfo?videoInfo.commentCount:0)+'개 예상)',25);
     var comments=await fetchComments(videoId);
-    updateLd('AI가 나뭇가지를 만들고 있습니다...',45);
+    updateLd('AI가 '+comments.length+'개의 실제 댓글을 분석하고 있습니다...',55);
     var analysis=await analyzeWithAI(videoInfo,url,comments);
-    if(!analysis.totalAnalyzed)analysis.totalAnalyzed=comments?comments.length:(videoInfo?(videoInfo.commentCount||0):0);
-    updateLd('나무를 그리는 중...',85);
-    await new Promise(function(r){setTimeout(r,300)});
-    document.getElementById('treeArea').innerHTML=renderTree(videoInfo,analysis);
-    showLd(false);
+    analysis.totalAnalyzed=comments.length;
+    updateLd('결과 정리 중...',90);
+    await new Promise(function(r){setTimeout(r,200)});
+    var html=renderTree(videoInfo,analysis,comments.length);
+    html+=renderCommentList(comments);
+    document.getElementById('treeArea').innerHTML=html;
+    showLd(false);toast('&#10004; '+comments.length+'개 댓글 분석 완료');
   }catch(e){showLd(false);showError(e.message||'알 수 없는 오류')}
-  finally{btn.disabled=false;btn.textContent='\ud83d\udd0d 분석하기'}
+  finally{btn.disabled=false;btn.textContent='&#128269; 분석하기'}
 };
 })();
 </script>
