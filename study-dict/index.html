@@ -423,7 +423,7 @@ if(item.funFact){h+='<div class="result-section"><div class="section-label"><spa
 if(item.examTip)h+='<div class="result-section"><div class="section-label"><span class="icon">🎯</span> 시험 대비 꿀팁</div><div class="section-content" style="background:var(--surface2);padding:14px 18px;border-radius:var(--radius-sm);font-size:14px;border:1px solid var(--border)">'+esc(item.examTip)+'</div></div>';
 h+='</div>';return h}
 
-function esc(s){if(!s)return'';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function esc(s){if(s==null)return'';s=String(s);return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 
 window.toggleSettings=async function(){var ov=document.getElementById("settingsOverlay");ov.classList.toggle("active");if(ov.classList.contains("active")){document.getElementById("adminPw").value="";try{var d={oaiSet:!!localStorage.getItem('oaiKey'),oaiPreview:(localStorage.getItem('oaiKey')||'').substring(0,8)+'...'};var s=document.getElementById("keyStatus");s.style.display="block";if(d.oaiSet){s.textContent="현재 상태: OpenAI ✅ "+d.oaiPreview;s.style.background="rgba(0,206,201,.08)";s.style.color="var(--positive)";s.style.border="1px solid rgba(0,206,201,.2)"}else{s.textContent="OpenAI API 키가 설정되지 않았습니다.";s.style.background="rgba(255,107,107,.08)";s.style.color="var(--negative)";s.style.border="1px solid rgba(255,107,107,.2)"}}catch(e){}}};
 window.saveSettings=async function(){
