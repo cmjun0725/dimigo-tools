@@ -159,6 +159,8 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
 /* Responsive */
 @media(max-width:700px){.input-row{flex-direction:column}.btn-analyze{width:100%}.video-info{flex-direction:column;align-items:flex-start}.video-thumb{width:100%;height:auto;aspect-ratio:16/9}.summary-bar{grid-template-columns:repeat(2,1fr)}.header h1{font-size:1.6em}.settings-panel{padding:24px}}
 @media(max-width:400px){.summary-bar{grid-template-columns:1fr 1fr}.summary-item .count{font-size:1.5em}}
+.ex-link{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:11px;color:var(--text2);cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.ex-link:hover{border-color:var(--accent);color:var(--accent2)}
 </style>
 </head>
 <body>
@@ -176,7 +178,32 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
     </div>
     <p class="api-hint">⚙️ 버튼에서 YouTube Data API 키와 OpenAI API 키를 설정해주세요</p>
   </div>
-  <div class="error-msg" id="errorMsg"></div>
+  <div id="usageGuide" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:24px;animation:slideUp .6s ease .1s both">
+  <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px">📖 사용법</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div style="background:var(--surface2);border-radius:10px;padding:14px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--positive)">1️⃣ 링크 입력</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.5">YouTube 영상 URL을 복사해서 붙여넣으세요<br><code style="background:var(--surface3);padding:2px 6px;border-radius:4px;font-size:11px">youtube.com/watch?v=...</code></div>
+    </div>
+    <div style="background:var(--surface2);border-radius:10px;padding:14px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--info)">2️⃣ AI 분석</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.5">AI가 댓글을 감정별로 분류합니다<br>긍정·부정·중립·질문·제안으로 나눔</div>
+    </div>
+    <div style="background:var(--surface2);border-radius:10px;padding:14px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--accent2)">3️⃣ 상세 확인</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.5">각 카테고리를 클릭하면 실제 댓글 내용 확인<br>세부 분류로 더 자세히 분석</div>
+    </div>
+    <div style="background:var(--surface2);border-radius:10px;padding:14px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--warning)">🔑 API 키 필요</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.5">⚙️ 설정에서 YouTube + OpenRouter 키 입력<br>두 키 모두 있어야 분석 가능</div>
+    </div>
+  </div>
+  <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+    <div style="font-size:12px;color:var(--text3);margin-bottom:8px">💡 추천 테스트 영상:</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap" id="exampleLinks"></div>
+  </div>
+</div>
+<div class="error-msg" id="errorMsg"></div>
   <div class="loading" id="loading">
     <div class="spinner"></div>
     <p id="loadingText">댓글을 불러오는 중입니다<span class="loading-dots"><span></span><span></span><span></span></span></p>
@@ -411,6 +438,32 @@ async function analyze(){
   }catch(e){showError(e.message||'알 수 없는 오류가 발생했습니다.')}
   finally{showLoading(false);btn.disabled=false;btn.textContent='🔍 분석하기'}
 }
+// 추천 테스트 영상
+var testVideos=[
+  {title:'코난 영화 예고편',id:'example1'},
+  {title:'BTS Dynamite',id:'dQw4w9WgXcQ'},
+  {title:'빵빵즈',id:'example2'}
+];
+var el=document.getElementById('exampleLinks');
+if(el){
+  // Just show placeholder links
+  var links=[
+    {title:'유튜브에서 영상 링크 복사',url:''},
+  ];
+  var p=document.createElement('span');
+  p.style.cssText='font-size:11px;color:var(--text3)';
+  p.textContent='YouTube에서 원하는 영상의 URL을 복사해서 위에 붙여넣으세요!';
+  el.appendChild(p);
+}
+
+// 분석 시작 시 사용법 숨기기
+var origAnalyze=analyze;
+analyze=async function(){
+  var ug=document.getElementById('usageGuide');
+  if(ug)ug.style.display='none';
+  await origAnalyze.apply(this,arguments);
+  // 분석 끝나면 다시 보이게 (결과 없을 때)
+};
 </script>
 </body>
 </html>
