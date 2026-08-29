@@ -10,31 +10,26 @@
 @keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--accent-glow)}50%{box-shadow:0 0 20px 4px var(--accent-glow)}}
-@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-
 :root{
   --bg:#08080d;--surface:#12121c;--surface2:#1a1a2e;--surface3:#222238;
   --border:#2a2a45;--border-glow:rgba(108,92,231,.3);
   --text:#f0f0f8;--text2:#8888a8;--text3:#555570;
   --accent:#6c5ce7;--accent2:#a29bfe;--accent-glow:rgba(108,92,231,.4);
   --positive:#00cec9;--negative:#ff6b6b;--neutral:#a29bfe;
-  --history:#ff6b6b;--science:#00cec9;--korean:#ffeaa7;--math:#74b9ff;--english:#fd79a8;--ethics:#a29bfe;--music:#fd79a8;--art:#e17055;--pe:#55efc4;
-  --radius:16px;--radius-sm:10px;
-  --shadow:0 8px 32px rgba(0,0,0,.5);
-  --glass:rgba(18,18,28,.85);
+  --history:#ff6b6b;--science:#00cec9;--korean:#ffeaa7;--math:#74b9ff;
+  --english:#fd79a8;--ethics:#a29bfe;--music:#fd79a8;--art:#e17055;--pe:#55efc4;
+  --radius:16px;--radius-sm:10px;--shadow:0 8px 32px rgba(0,0,0,.5);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Noto Sans KR','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 20% 10%,rgba(108,92,231,.06) 0%,transparent 50%),radial-gradient(ellipse at 80% 90%,rgba(0,206,201,.04) 0%,transparent 50%);pointer-events:none;z-index:0}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 10%,rgba(108,92,231,.06) 0%,transparent 50%),radial-gradient(ellipse at 80% 90%,rgba(0,206,201,.04) 0%,transparent 50%);pointer-events:none;z-index:0}
 
-/* Header */
 .header{text-align:center;padding:56px 20px 28px;position:relative;z-index:1}
 .header-badge{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:30px;padding:6px 16px;font-size:12px;color:var(--text2);margin-bottom:16px}
-.logo{font-size:clamp(36px,8vw,52px);font-weight:900;background:linear-gradient(135deg,var(--accent2) 0%,var(--positive) 50%,var(--info) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;letter-spacing:-2px}
-.logo-sub{font-size:15px;font-weight:400;color:var(--text2);display:block;margin-top:4px;letter-spacing:0;-webkit-text-fill-color:var(--text2)}
+.logo{font-size:clamp(36px,8vw,52px);font-weight:900;background:linear-gradient(135deg,var(--accent2),var(--positive));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;letter-spacing:-2px}
+.logo-sub{font-size:15px;font-weight:400;color:var(--text2);display:block;margin-top:4px;-webkit-text-fill-color:var(--text2)}
 .subtitle{color:var(--text3);font-size:14px;margin-bottom:28px;font-weight:300}
 
-/* Settings */
 .settings-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;backdrop-filter:blur(8px)}
 .settings-overlay.active{display:flex;align-items:center;justify-content:center;animation:fadeIn .2s ease}
 .settings-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;width:92%;max-width:440px;box-shadow:0 16px 64px rgba(0,0,0,.6);animation:slideUp .3s ease}
@@ -46,160 +41,120 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
 .settings-box .btn-row{display:flex;gap:10px;margin-top:22px}
 .settings-box button{flex:1;padding:11px;border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:700;font-family:inherit;transition:all .2s}
 .btn-close{background:var(--surface2);color:var(--text2);border:1px solid var(--border)!important}
-.btn-close:hover{background:var(--border)}
 .btn-save{background:linear-gradient(135deg,var(--accent),#8b5cf6);color:#fff}
-.btn-save:hover{box-shadow:0 4px 16px var(--accent-glow);transform:translateY(-1px)}
-#settingsStatus{margin-top:14px;padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;display:none}
-#settingsStatus.ok{display:block;background:rgba(0,206,201,.08);color:var(--positive);border:1px solid rgba(0,206,201,.2)}
+#keyStatus{margin-top:12px;padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;display:none}
 
-/* Subject selector */
 .subject-selector{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:700px;margin:0 auto 20px;padding:0 20px;position:relative;z-index:1}
-.subject-pill{background:var(--surface);border:2px solid var(--border);border-radius:30px;padding:9px 18px;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .25s;font-family:inherit;display:flex;align-items:center;gap:7px;position:relative;overflow:hidden}
-.subject-pill::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);transition:left .4s}
-.subject-pill:hover::before{left:100%}
+.subject-pill{background:var(--surface);border:2px solid var(--border);border-radius:30px;padding:9px 18px;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .25s;font-family:inherit;display:flex;align-items:center;gap:7px}
 .subject-pill:hover{border-color:var(--accent);color:var(--accent2);transform:translateY(-1px)}
 .subject-pill.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 4px 16px var(--accent-glow)}
 .subject-pill .pe{font-size:16px}
-.subject-pill .pc{font-size:10px;background:rgba(255,255,255,.12);padding:1px 7px;border-radius:10px;font-weight:700}
 
-/* Search */
 .search-container{max-width:640px;margin:0 auto;padding:0 20px;position:relative;z-index:1}
-.search-box{position:relative;display:flex;align-items:center;background:var(--surface);border:2px solid var(--border);border-radius:60px;padding:4px 6px 4px 24px;transition:all .3s ease}
+.search-box{position:relative;display:flex;align-items:center;background:var(--surface);border:2px solid var(--border);border-radius:60px;padding:4px 6px 4px 24px;transition:all .3s}
 .search-box:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-glow)}
-.search-box input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:16px;font-family:inherit;padding:14px 0;font-weight:400}
+.search-box input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:16px;font-family:inherit;padding:14px 0}
 .search-box input::placeholder{color:var(--text3);font-weight:300}
-.search-btn{background:linear-gradient(135deg,var(--accent),#8b5cf6);border:none;border-radius:50px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s;flex-shrink:0}
-.search-btn:hover{transform:scale(1.05);box-shadow:0 4px 16px var(--accent-glow)}
+.search-btn{background:linear-gradient(135deg,var(--accent),#8b5cf6);border:none;border-radius:50px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s;flex-shrink:0}
+.search-btn:hover{transform:scale(1.05)}
 .search-btn svg{width:20px;height:20px;fill:white}
 .suggestions{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);z-index:100;display:none}
 .suggestions.show{display:block;animation:fadeIn .15s ease}
 .suggestion-item{padding:12px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:background .15s}
 .suggestion-item:hover{background:var(--surface2)}
 .suggestion-tag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap}
-.suggestion-name{font-size:14px;font-weight:500}
 
-/* Quick tags */
-.quick-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:640px;margin:20px auto 0;padding:0 20px;position:relative;z-index:1}
-.quick-tag{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:7px 16px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .2s;font-family:inherit;font-weight:500}
-.quick-tag:hover{border-color:var(--accent);color:var(--accent2);background:rgba(108,92,231,.08)}
+.example-tag{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:7px 16px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:5px}
+.example-tag:hover{border-color:var(--accent);color:var(--accent2);background:rgba(108,92,231,.08)}
 
-/* Timeline */
 .timeline-section{max-width:900px;margin:36px auto 0;padding:0 20px;position:relative;z-index:1}
 .timeline-section.hidden{display:none}
 .timeline-title{font-size:13px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .timeline-controls{display:flex;gap:6px;margin-bottom:10px;align-items:center}
-.tl-z-btn{background:var(--surface);border:1px solid var(--border);color:var(--text2);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:inherit}
+.tl-z-btn{background:var(--surface);border:1px solid var(--border);color:var(--text2);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .tl-z-btn:hover{border-color:var(--accent);color:var(--accent2)}
 .tl-z-label{font-size:11px;color:var(--text3);min-width:50px;text-align:center}
 .timeline-wrap{position:relative;overflow-x:auto;overflow-y:hidden;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px 20px 20px;scrollbar-width:thin;scrollbar-color:var(--accent) var(--surface2)}
-.timeline-wrap::-webkit-scrollbar{height:6px}
-.timeline-wrap::-webkit-scrollbar-track{background:var(--surface2);border-radius:3px}
-.timeline-wrap::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
-.timeline-track{position:relative;min-height:220px;transition:width .3s ease}
-.timeline-line{position:absolute;top:50%;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--border) 0%,var(--accent) 20%,var(--accent) 80%,var(--border) 100%);transform:translateY(-50%);border-radius:2px;opacity:.6}
+.timeline-track{position:relative;min-height:220px;transition:width .3s}
+.timeline-line{position:absolute;top:50%;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--border),var(--accent) 20%,var(--accent) 80%,var(--border));transform:translateY(-50%);border-radius:2px;opacity:.6}
 .timeline-era{position:absolute;top:50%;transform:translate(-50%,-50%);text-align:center;cursor:pointer;transition:all .25s;padding:4px 2px}
 .timeline-era:hover{transform:translate(-50%,-50%) scale(1.08);z-index:5}
 .tl-era-dot{width:16px;height:16px;border-radius:50%;border:3px solid var(--bg);position:absolute;left:50%;transform:translateX(-50%);z-index:2;transition:all .3s;box-shadow:0 2px 8px rgba(0,0,0,.3)}
 .tl-era-dot.hl{animation:pulse 2s infinite;width:20px;height:20px}
-.tl-era-label{font-size:11px;font-weight:700;white-space:nowrap;transition:color .2s}
+.tl-era-label{font-size:11px;font-weight:700;white-space:nowrap}
 .tl-era-years{font-size:9px;color:var(--text3);white-space:nowrap;margin-top:12px}
 .timeline-event{position:absolute;cursor:pointer;transition:all .25s;z-index:4}
 .timeline-event:hover{transform:translate(-50%,-50%) scale(1.3);z-index:10}
-.tl-ev-dot{width:10px;height:10px;border-radius:50%;background:var(--history);border:2px solid var(--surface);transition:all .3s;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.tl-ev-dot{width:10px;height:10px;border-radius:50%;background:var(--history);border:2px solid var(--surface);box-shadow:0 2px 6px rgba(0,0,0,.4)}
 .tl-ev-dot.hl{background:var(--accent);box-shadow:0 0 16px var(--accent);width:14px;height:14px;border-width:3px}
-.tl-ev-label{font-size:9px;color:var(--text2);white-space:nowrap;max-width:90px;overflow:hidden;text-overflow:ellipsis;text-align:center;margin:4px auto 0;font-weight:500}
+.tl-ev-label{font-size:9px;color:var(--text2);white-space:nowrap;max-width:90px;overflow:hidden;text-overflow:ellipsis;text-align:center;margin:4px auto 0}
 .tl-ev-tip{display:none;position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;min-width:180px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:20;text-align:left}
 .timeline-event:hover .tl-ev-tip{display:block;animation:fadeIn .15s ease}
-.tl-ev-tip .tt-t{font-size:13px;font-weight:700;margin-bottom:4px;color:var(--text)}
+.tl-ev-tip .tt-t{font-size:13px;font-weight:700;margin-bottom:4px}
 .tl-ev-tip .tt-y{font-size:11px;color:var(--accent2);margin-bottom:4px;font-weight:600}
 .tl-ev-tip .tt-d{font-size:11px;color:var(--text2);line-height:1.5}
 
-/* Results */
 .result-area{max-width:720px;margin:36px auto;padding:0 20px;position:relative;z-index:1}
 .result-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:20px;box-shadow:var(--shadow);animation:slideUp .4s ease}
 .result-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap}
 .result-term{font-size:clamp(24px,5vw,34px);font-weight:900;letter-spacing:-1px}
-.result-field{font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;color:white;letter-spacing:.5px}
-.field-역사{background:var(--history)}
-.field-과학{background:var(--science)}
-.field-국어{background:var(--korean);color:#333}
-.field-수학{background:var(--math)}
-.field-영어{background:var(--english)}
-.field-도덕{background:var(--ethics)}
-.field-음악{background:var(--music);color:#333}
-.field-미술{background:var(--art)}
-.field-체육{background:var(--pe);color:#333}
+.result-field{font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;color:white}
+.field-역사{background:var(--history)}.field-과학{background:var(--science)}.field-국어{background:var(--korean);color:#333}
+.field-수학{background:var(--math)}.field-영어{background:var(--english)}.field-도덕{background:var(--ethics)}
+.field-음악{background:var(--music);color:#333}.field-미술{background:var(--art)}.field-체육{background:var(--pe);color:#333}
 .result-reading{font-size:15px;color:var(--text2);margin-top:-12px;margin-bottom:20px;font-weight:300}
 .result-section{margin-bottom:18px}
 .result-section:last-child{margin-bottom:0}
 .section-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent2);margin-bottom:8px;display:flex;align-items:center;gap:7px}
-.section-label .icon{font-size:14px}
 .section-content{font-size:14px;line-height:1.8;color:var(--text)}
 .section-content strong{color:var(--accent2);font-weight:600}
 .hanja-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 20px;margin-top:6px}
 .hanja-char{font-size:30px;font-weight:900;display:inline-block;margin-right:16px;color:var(--korean)}
 .hanja-meaning{font-size:13px;color:var(--text2)}
+.result-tl{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;margin-top:6px}
+.result-tl .era{font-size:15px;font-weight:700}
+.result-tl .year{font-size:13px;color:var(--accent2);margin-left:8px}
+.ai-loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:32px;color:var(--text2);font-size:14px}
+.spinner-sm{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
 .not-found-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:36px;text-align:center;box-shadow:var(--shadow);animation:slideUp .4s ease}
 .not-found-card .emoji{font-size:48px;margin-bottom:16px}
-.not-found-card h3{font-size:18px;margin-bottom:8px;font-weight:700}
+.not-found-card h3{font-size:18px;margin-bottom:8px}
 .not-found-card p{color:var(--text2);font-size:14px;line-height:1.7}
-.tip-list{text-align:left;margin-top:18px;padding:16px 20px;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid var(--border)}
-.tip-list h4{font-size:13px;font-weight:700;margin-bottom:8px;color:var(--accent2)}
-.tip-list li{font-size:12px;color:var(--text2);margin-bottom:5px;margin-left:14px;line-height:1.6}
-.stats-bar{max-width:720px;margin:0 auto 14px;padding:0 20px;display:flex;justify-content:space-between;align-items:center}
-.stats-text{font-size:13px;color:var(--text2)}
-.filter-btn{font-size:12px;padding:6px 14px;border-radius:16px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-family:inherit;font-weight:500;transition:all .2s}
-.filter-btn:hover{border-color:var(--accent);color:var(--accent2);background:rgba(108,92,231,.08)}
 
-/* AI Loading */
-.ai-loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:32px;color:var(--text2);font-size:14px}
-.ai-loading .spinner-sm{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
-
-/* Result inline timeline */
-.result-tl{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;margin-top:6px}
-.result-tl .era{font-size:15px;font-weight:700;color:var(--text)}
-.result-tl .year{font-size:13px;color:var(--accent2);margin-left:8px}
-
-/* Responsive */
 @media(max-width:600px){.header{padding:40px 20px 20px}.result-card{padding:24px 20px}.subject-pill{padding:7px 12px;font-size:12px}.timeline-event .tl-ev-tip{display:none!important}}
-.example-tag{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:7px 16px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:5px}
-.example-tag:hover{border-color:var(--accent);color:var(--accent2);background:rgba(108,92,231,.08)}
-.example-tag .et-field{font-size:10px;padding:2px 6px;border-radius:8px;font-weight:600}
 </style>
 </head>
 <body>
+
 <div class="header">
   <div class="header-badge">📚 중고등 학습 사전</div>
   <div style="position:relative;display:inline-block">
     <div class="logo">모르는것<span class="logo-sub">중고등 학습 사전</span></div>
-    <button onclick="toggleSettings()" style="position:absolute;top:-8px;right:-48px;background:var(--surface);border:1px solid var(--border);color:var(--text2);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:1em;display:flex;align-items:center;justify-content:center;transition:all .25s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent2)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">⚙️</button>
+    <button onclick="toggleSettings()" style="position:absolute;top:-8px;right:-48px;background:var(--surface);border:1px solid var(--border);color:var(--text2);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:1em;display:flex;align-items:center;justify-content:center;transition:all .25s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">⚙️</button>
   </div>
-  <p class="subtitle">모르는 단어를 검색하면 분야별로 꼼꼼하게 알려드립니다</p>
+  <p class="subtitle">모르는 단어를 검색하면 AI가 분야별로 꼼꼼하게 알려드립니다</p>
 </div>
 
 <div class="subject-selector" id="subjectSelector">
-  <button class="subject-pill active" data-field="all"><span class="pe">🌐</span>전체<span class="pc" id="countAll"></span></button>
-  <button class="subject-pill" data-field="역사"><span class="pe">📜</span>역사<span class="pc" id="count역사"></span></button>
-  <button class="subject-pill" data-field="과학"><span class="pe">🔬</span>과학<span class="pc" id="count과학"></span></button>
-  <button class="subject-pill" data-field="국어"><span class="pe">📖</span>국어<span class="pc" id="count국어"></span></button>
-  <button class="subject-pill" data-field="수학"><span class="pe">📐</span>수학<span class="pc" id="count수학"></span></button>
-  <button class="subject-pill" data-field="영어"><span class="pe">🌍</span>영어<span class="pc" id="count영어"></span></button>
-  <button class="subject-pill" data-field="도덕"><span class="pe">⚖️</span>도덕<span class="pc" id="count도덕"></span></button>
-  <button class="subject-pill" data-field="음악"><span class="pe">🎵</span>음악<span class="pc" id="count음악"></span></button>
-  <button class="subject-pill" data-field="미술"><span class="pe">🎨</span>미술<span class="pc" id="count미술"></span></button>
-  <button class="subject-pill" data-field="체육"><span class="pe">🏃</span>체육<span class="pc" id="count체육"></span></button>
+  <button class="subject-pill active" data-field="all"><span class="pe">🌐</span>전체</button>
+  <button class="subject-pill" data-field="역사"><span class="pe">📜</span>역사</button>
+  <button class="subject-pill" data-field="과학"><span class="pe">🔬</span>과학</button>
+  <button class="subject-pill" data-field="국어"><span class="pe">📖</span>국어</button>
+  <button class="subject-pill" data-field="수학"><span class="pe">📐</span>수학</button>
+  <button class="subject-pill" data-field="영어"><span class="pe">🌍</span>영어</button>
+  <button class="subject-pill" data-field="도덕"><span class="pe">⚖️</span>도덕</button>
+  <button class="subject-pill" data-field="음악"><span class="pe">🎵</span>음악</button>
+  <button class="subject-pill" data-field="미술"><span class="pe">🎨</span>미술</button>
+  <button class="subject-pill" data-field="체육"><span class="pe">🏃</span>체육</button>
 </div>
 
 <div class="settings-overlay" id="settingsOverlay" onclick="if(event.target===this)toggleSettings()">
   <div class="settings-box">
     <h2>⚙️ AI 설정</h2>
-    <label>🔑 관리자 비밀번호</label>
-    <input type="password" id="adminPw" placeholder="비밀번호를 입력하세요" autocomplete="off">
-    <label>🤖 OpenAI API 키</label>
+    <label>🤖 OpenRouter API 키</label>
     <input type="password" id="oaiKeyInput" placeholder="sk-or-..." autocomplete="off">
-    <div class="hint">서버에 영구 저장 — 모든 사용자가 공용으로 사용합니다</div>
-    <div id="keyStatus" style="margin-top:12px;padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;display:none"></div>
-    <div id="settingsStatus"></div>
+    <div class="hint">OpenRouter에서 발급 (openrouter.ai/keys)</div>
+    <div id="keyStatus"></div>
     <div class="btn-row">
       <button class="btn-close" onclick="toggleSettings()">닫기</button>
       <button class="btn-save" onclick="saveSettings()">💾 저장</button>
@@ -215,12 +170,10 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
   <div class="suggestions" id="suggestions"></div>
 </div>
 
-<div class="quick-tags" id="quickTags"></div>
-
-<div id="welcomeSection" style="text-align:center;padding:30px 20px;margin-top:10px">
+<div id="welcomeSection" style="text-align:center;padding:30px 20px;margin-top:10px;position:relative;z-index:1">
   <div style="font-size:2em;margin-bottom:12px">🔍</div>
-  <h3 style="font-size:16px;font-weight:600;margin-bottom:8px;color:var(--text2)">검색어를 입력하면 AI가 분석합니다</h3>
-  <p style="font-size:13px;color:var(--text3);line-height:1.6;margin-bottom:16px">아래 추천 검색어를 클릭하거나, 직접 검색어를 입력하세요</p>
+  <h3 style="font-size:16px;font-weight:600;margin-bottom:8px;color:var(--text2)">검색어를 입력하면 AI가 즉시 분석합니다</h3>
+  <p style="font-size:13px;color:var(--text3);line-height:1.6;margin-bottom:16px">과목을 선택하거나, 아래 추천 검색어를 클릭해보세요</p>
   <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center" id="exampleTags"></div>
 </div>
 
@@ -237,177 +190,215 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
   </div>
 </div>
 
-<div class="stats-bar" id="statsBar" style="display:none;"></div>
 <div class="result-area" id="resultArea"></div>
 
 <script>
 (function(){
-var currentField='all';
-var highlightTerm=null;
-var tlZoomLvl=1;
-var si=document.getElementById('searchInput'),se=document.getElementById('suggestions'),ra=document.getElementById('resultArea'),sb=document.getElementById('statsBar'),qt=document.getElementById('quickTags');
+// === 데이터 ===
+var TL_ERAS=[
+  {id:'stone',name:'구석기',color:'#888',start:-500000,end:-8000},
+  {id:'neo',name:'신석기',color:'#a39',start:-8000,end:-2333},
+  {id:'gojoseon',name:'고조선',color:'#e74',start:-2333,end:-108},
+  {id:'samhan',name:'삼한',color:'#e90',start:-300,end:57},
+  {id:'goguryeo',name:'고구려 건국',color:'#e55',start:-18,end:668},
+  {id:'silla',name:'신라 건국',color:'#fd0',start:-57,end:935},
+  {id:'unified',name:'통일신라',color:'#a5e',start:676,end:935},
+  {id:'goryeo',name:'고려',color:'#0b8',start:918,end:1392},
+  {id:'joseon',name:'조선시대',color:'#3af',start:1392,end:1897},
+  {id:'daehan',name:'대한제국',color:'#c55',start:1897,end:1910},
+  {id:'colonial',name:'일제강점기',color:'#888',start:1910,end:1945},
+  {id:'modern',name:'대한민국',color:'#6c5',start:1948,end:2025}
+];
+var TL_EVENTS=[
+  {name:'고조선 건국',year:-2333,era:'gojoseon',desc:'단군왕검이 건국'},
+  {name:'고구려 건국',year:-18,era:'goguryeo',desc:'주몽이 건국'},
+  {name:'백제 건국',year:-18,era:'goguryeo',desc:'온조왕이 건국'},
+  {name:'신라 건국',year:-57,era:'silla',desc:'박혁거세가 건국'},
+  {name:'삼국통일',year:676,era:'unified',desc:'신라가 삼국을 통일'},
+  {name:'화백제도',year:649,era:'silla',desc:'신라의 합의제 통치'},
+  {name:'진대법 실시',year:838,era:'unified',desc:'신라의 곡식 구휼 제도'},
+  {name:'고려 건국',year:918,era:'goryeo',desc:'왕건이 건국'},
+  {name:'광종 과거제',year:958,era:'goryeo',desc:'중국식 과거제 도입'},
+  {name:'감찰서 도입',year:983,era:'goryeo',desc:'지방 행정 제도'},
+  {name:'팔만대장경',year:1251,era:'goryeo',desc:'세계 최고 금속활자본'},
+  {name:'공민왕 개혁',year:1356,era:'goryeo',desc:'고려 후기 개혁'},
+  {name:'조선 건국',year:1392,era:'joseon',desc:'이성계가 건국'},
+  {name:'세종 문화',year:1418,era:'joseon',desc:'훈민정음 창제 등'},
+  {name:'임진왜란',year:1592,era:'joseon',desc:'일본의 침입'},
+  {name:'병자호란',year:1636,era:'joseon',desc:'청나라의 침입'},
+  {name:'을사조약',year:1905,era:'daehan',desc:'일제의 강제 조약'},
+  {name:'3·1운동',year:1919,era:'colonial',desc:'독립운동'},
+  {name:'대한민국 수립',year:1948,era:'modern',desc:'정부 수립'}
+];
+var TL_BASE=-510000,TL_SPAN=530000;
 
+// === 상태 ===
+var currentField='all',highlightTerm=null,tlZoomLvl=1;
+var si=document.getElementById('searchInput'),se=document.getElementById('suggestions'),ra=document.getElementById('resultArea');
+
+// === 유틸 ===
+function esc(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+// === 설정 ===
+window.toggleSettings=function(){
+  var ov=document.getElementById('settingsOverlay');
+  ov.classList.toggle('active');
+  if(ov.classList.contains('active')){
+    var k=localStorage.getItem('oaiKey')||'';
+    document.getElementById('oaiKeyInput').value=k;
+    showKS(k?'현재 상태: OpenAI ✅ '+k.substring(0,8)+'...':'OpenRouter API 키가 설정되지 않았습니다.',k?'ok':'err');
+  }
+};
+window.saveSettings=function(){
+  var v=document.getElementById('oaiKeyInput').value.trim();
+  if(!v){showKS('API 키를 입력해주세요.','err');return}
+  if(!v.startsWith('sk-or-')&&!v.startsWith('sk-')){showKS('키는 sk-로 시작해야 합니다.','err');return}
+  if(v.length<10){showKS('키가 너무 짧습니다.','err');return}
+  localStorage.setItem('oaiKey',v);
+  showKS('✅ 저장 완료!','ok');
+  setTimeout(function(){toggleSettings()},1200);
+};
+function showKS(msg,type){
+  var s=document.getElementById('keyStatus');s.textContent=msg;s.style.display='block';
+  s.style.background=type==='ok'?'rgba(0,206,201,.08)':'rgba(255,107,107,.08)';
+  s.style.color=type==='ok'?'var(--positive)':'var(--negative)';
+  s.style.border='1px solid '+(type==='ok'?'rgba(0,206,201,.2)':'rgba(255,107,107,.2)');
+  s.style.borderRadius='var(--radius-sm)';
+  s.style.padding='10px 14px';s.style.fontSize='13px';
+}
+function getOaiKey(){return localStorage.getItem('oaiKey')?true:false}
+
+// === 과목 선택 ===
 document.querySelectorAll('.subject-pill').forEach(function(p){
-p.addEventListener('click',function(){
-  document.querySelectorAll('.subject-pill').forEach(function(x){x.classList.remove('active')});
-  p.classList.add('active');currentField=p.getAttribute('data-field');
-  document.getElementById('timelineSection').classList.add('hidden');
-  sb.style.display='none';ra.innerHTML='';
-})});
-
-document.getElementById('searchBtn').addEventListener('click',doSearch);
-si.addEventListener('keydown',function(e){if(e.key==='Enter'){doSearch();se.classList.remove('show')}});
-si.addEventListener('input',function(){
-  se.classList.remove('show');
+  p.addEventListener('click',function(){
+    document.querySelectorAll('.subject-pill').forEach(function(x){x.classList.remove('active')});
+    p.classList.add('active');
+    currentField=p.getAttribute('data-field');
+    document.getElementById('timelineSection').classList.add('hidden');
+  });
 });
+
+// === 검색 ===
+document.getElementById('searchBtn').addEventListener('click',function(){doSearch()});
+si.addEventListener('keydown',function(e){if(e.key==='Enter'){doSearch();se.classList.remove('show')}});
 document.addEventListener('click',function(e){if(!e.target.closest('.search-container'))se.classList.remove('show')});
 
-function searchByField(f){
-  document.getElementById('timelineSection').classList.toggle('hidden',!f||f!=='역사');
-  // 추천 검색어
-var examples=[
-  {term:'진대법',field:'역사'},{term:'뷰렛반응',field:'과학'},{term:'삼강행실도',field:'역사'},
-  {term:'이차방정식',field:'수학'},{term:'비유',field:'국어'},{term:'칸트의 의무론',field:'도덕'},
-  {term:'과전법',field:'역사'},{term:'요오드반응',field:'과학'},{term:'현재완료',field:'영어'},
-  {term:'훈민정음',field:'역사'},{term:'화폐경제',field:'역사'},{term:'뉴턴의 운동법칙',field:'과학'},{term:'음표와 음자리',field:'음악'},{term:'색채보색',field:'미술'},{term:'배드민턴 경기규칙',field:'체육'},{term:'皮膜楽器',field:'음악'},{term:'인상주의',field:'미술'},{term:'习射',field:'체육'}
-];
-var et=document.getElementById('exampleTags');
-if(et){
-  examples.forEach(function(ex){
-    var b=document.createElement('button');
-    b.className='example-tag';
-    var fc=ex.field==='역사'?'var(--history)':ex.field==='과학'?'var(--science)':ex.field==='국어'?'var(--korean)':ex.field==='수학'?'var(--math)':ex.field==='영어'?'var(--english)':'var(--ethics)';
-    b.innerHTML=ex.term+' <span class="et-field" style="background:'+fc+'22;color:'+fc+'">'+ex.field+'</span>';
-    b.addEventListener('click',function(){si.value=ex.term;doSearch()});
-    et.appendChild(b);
-  });
-}
-
-// 검색 시 환영 섹션 숨기기
-var origDoSearch=doSearch;
-doSearch=function(){
-  var ws=document.getElementById('welcomeSection');
-  if(ws)ws.style.display='none';
-  origDoSearch();
-};
-
-renderTimeline();
-  sb.style.display='none';
-}
-
-function resetSearch(){
-  document.getElementById('timelineSection').classList.add('hidden');
-  sb.style.display='none';ra.innerHTML='';si.value='';highlightTerm=null;
-}
-
 function doSearch(){
-  var q=si.value.trim();if(!q)return;highlightTerm=null;
+  var q=si.value.trim();if(!q)return;
   se.classList.remove('show');
+  document.getElementById('welcomeSection').style.display='none';
   document.getElementById('timelineSection').classList.add('hidden');
   aiSearch(q);
 }
 
-function renderCard(item){
-var h='<div class="result-card"><div class="result-header"><span class="result-term">'+esc(item.name)+'</span><span class="result-field field-'+item.field+'">'+item.field+'</span></div>';
-if(item.reading)h+='<div class="result-reading">'+esc(item.reading)+'</div>';
-if(item.hanja&&item.hanja.length){h+='<div class="result-section"><div class="section-label"><span class="icon">🔤</span> 한자 풀이</div><div class="hanja-box">';item.hanja.forEach(function(j){h+='<div style="margin-bottom:6px"><span class="hanja-char">'+j.char+'</span><span class="hanja-meaning">'+esc(j.meaning)+'</span></div>'});h+='</div></div>'}
-h+='<div class="result-section"><div class="section-label"><span class="icon">📖</span> '+(item.field==='역사'?'의미':'이것은 무엇인가?')+'</div><div class="section-content"><strong>'+esc(item.meaning)+'</strong></div></div>';
-h+='<div class="result-section"><div class="section-label"><span class="icon">📝</span> 상세 설명</div><div class="section-content">'+esc(item.description)+'</div></div>';
-if(item.tlEra){h+='<div class="result-section"><div class="section-label"><span class="icon">📅</span> 타임라인 위치</div><div class="result-tl"><span class="era">'+esc(item.tlEra)+'</span>'+(item.tlYear?'<span class="year">· '+esc(item.tlYear)+'</span>':'')+'</div></div>'}
-if(item.practicalUse)h+='<div class="result-section"><div class="section-label"><span class="icon">🔧</span> 실무 활용</div><div class="section-content">'+esc(item.practicalUse)+'</div></div>';
-h+='<div class="result-section"><div class="section-label"><span class="icon">⭐</span> 왜 배우는가?</div><div class="section-content">'+esc(item.importance)+'</div></div>';
-if(item.examTip)h+='<div class="result-section"><div class="section-label"><span class="icon">🎯</span> 시험 대비 꿀팁</div><div class="section-content" style="background:var(--surface2);padding:12px 16px;border-radius:var(--radius-sm);font-size:13px;border:1px solid var(--border)">'+esc(item.examTip)+'</div></div>';
-return h+'</div>'}
+// === 추천 검색어 ===
+var examples=[
+  {term:'진대법',field:'역사'},{term:'뷰렛반응',field:'과학'},{term:'삼강행실도',field:'역사'},
+  {term:'이차방정식',field:'수학'},{term:'비유',field:'국어'},{term:'칸트의 의무론',field:'도덕'},
+  {term:'과전법',field:'역사'},{term:'요오드반응',field:'과학'},{term:'현재완료',field:'영어'},
+  {term:'훈민정음',field:'역사'},{term:'음표와 음자리',field:'음악'},{term:'인상주의',field:'미술'},
+  {term:'배드민턴 경기규칙',field:'체육'}
+];
+var et=document.getElementById('exampleTags');
+examples.forEach(function(ex){
+  var b=document.createElement('button');b.className='example-tag';
+  var fc=ex.field==='역사'?'var(--history)':ex.field==='과학'?'var(--science)':ex.field==='국어'?'var(--korean)':ex.field==='수학'?'var(--math)':ex.field==='영어'?'var(--english)':ex.field==='음악'?'var(--music)':ex.field==='미술'?'var(--art)':ex.field==='체육'?'var(--pe)':'var(--ethics)';
+  b.innerHTML=esc(ex.term)+' <span style="font-size:10px;padding:2px 6px;border-radius:8px;font-weight:600;background:'+fc+'22;color:'+fc+'">'+esc(ex.field)+'</span>';
+  b.addEventListener('click',function(){si.value=ex.term;doSearch()});
+  et.appendChild(b);
+});
 
-// Timeline
+// === 타임라인 ===
 function renderTimeline(){
-  var track=document.getElementById('timelineTrack'),tw=TL_BASE*tlZoomLvl;
-  track.style.width=tw+'px';document.getElementById('tlZoomLabel').textContent=Math.round(tlZoomLvl*100)+'%';
+  var track=document.getElementById('timelineTrack');
   track.querySelectorAll('.timeline-era,.timeline-event').forEach(function(e){e.remove()});
-  var pad=40,usable=tw-pad*2,segW=usable/TL_ERAS.length;
+  var pad=60,segW=(track.clientWidth||800-pad*2)/TL_ERAS.length;
   TL_ERAS.forEach(function(era,i){
-    var cx=pad+i*segW+segW/2,el=document.createElement('div');
-    el.className='timeline-era';el.style.left=cx+'px';el.style.width=segW+'px';
-    var hl=highlightTerm&&highlightTerm.tlEra&&era.name.indexOf(highlightTerm.tlEra)!==-1;
+    var x=pad+i*segW+segW/2;
+    var isHL=highlightTerm&&highlightTerm.tlEra&&era.name.indexOf(highlightTerm.tlEra)!==-1;
     var above=i%2===0;
-    var dot='<div class="tl-era-dot'+(hl?' hl':'')+'" style="background:'+(hl?'var(--accent)':era.color)+(hl?';box-shadow:0 0 12px var(--accent)':'')+(above?';bottom:-7px':';top:-7px')+'"></div>';
-    var lbl='<div class="tl-era-label" style="color:'+(hl?'var(--accent2)':'var(--text2)')+(above?'':'margin-top:12px;margin-bottom:0')+'">'+esc(era.name)+'</div>';
-    var yrs='<div class="tl-era-years">'+era.start.toLocaleString()+'~'+era.end+'</div>';
-    el.innerHTML=above?lbl+yrs+dot:dot+lbl+yrs;
+    var el=document.createElement('div');el.className='timeline-era';
+    el.style.left=x+'px';
+    var dotTop=above?'20px':'auto',dotBot=above?'auto':'20px';
+    var lblTop=above?'auto':'0',lblBot=above?'0':'auto';
+    el.innerHTML='<div class="tl-era-dot'+(isHL?' hl':'')+'" style="background:'+era.color+';top:'+dotTop+';bottom:'+dotBot+'"></div>'
+      +'<div class="tl-era-label" style="color:'+(isHL?'var(--accent2)':'var(--text2)')+(above?'':'margin-top:12px;margin-bottom:0')+'">'+esc(era.name)+'</div>'
+      +'<div class="tl-era-years" style="top:'+lblTop+';bottom:'+lblBot+'">'+era.start.toLocaleString()+'~'+era.end.toLocaleString()+'</div>';
     el.addEventListener('click',function(){si.value=era.name;doSearch();ra.scrollIntoView({behavior:'smooth',block:'start'})});
-    track.appendChild(el)});
+    track.appendChild(el);
+  });
   TL_EVENTS.forEach(function(ev){
-    var eIdx=TL_ERAS.findIndex(function(e){return e.id===ev.era});if(eIdx<0)return;
-    var era=TL_ERAS[eIdx],eStart=pad+eIdx*segW;
-    var frac=(ev.year-era.start)/Math.max(era.end-era.start,1),x=eStart+frac*segW;
+    var eIdx=TL_ERAS.findIndex(function(e){return e.id===ev.era});
+    if(eIdx<0)return;
+    var x=pad+eIdx*segW+segW/2+((ev.year-TL_ERAS[eIdx].start)/(TL_ERAS[eIdx].end-TL_ERAS[eIdx].start)-0.5)*segW*0.7;
+    var above=TL_ERAS.indexOf(TL_ERAS[eIdx])%2===0;
     var el=document.createElement('div');el.className='timeline-event';
-    el.style.cssText='left:'+x+'px;top:50%;transform:translate(-50%,-50%);position:absolute';
-    var hl=highlightTerm&&highlightTerm.tlYear&&ev.name.indexOf(highlightTerm.name)!==-1;
-    el.innerHTML='<div class="tl-ev-dot'+(hl?' hl':'')+'"></div><div class="tl-ev-label">'+esc(ev.name)+'</div><div class="tl-ev-tip"><div class="tt-t">'+esc(ev.name)+'</div><div class="tt-y">'+ev.year.toLocaleString()+'년</div><div class="tt-d">'+esc(ev.desc)+'</div></div>';
+    el.style.left=x+'px';el.style.top=above?'35%':'65%';
+    var isEvHL=highlightTerm&&highlightTerm.tlEra&&ev.name.indexOf(highlightTerm)!==-1;
+    el.innerHTML='<div class="tl-ev-dot'+(isEvHL?' hl':'')+'"></div><div class="tl-ev-label">'+esc(ev.name)+'</div>'
+      +'<div class="tl-ev-tip"><div class="tt-t">'+esc(ev.name)+'</div><div class="tt-y">'+ev.year.toLocaleString()+'년</div><div class="tt-d">'+esc(ev.desc)+'</div></div>';
     el.addEventListener('click',function(){si.value=ev.name;doSearch();ra.scrollIntoView({behavior:'smooth',block:'start'})});
-    track.appendChild(el)});
-  if(highlightTerm){
+    track.appendChild(el);
+  });
+  if(highlightTerm&&highlightTerm.tlEra){
     var eIdx=TL_ERAS.findIndex(function(e){return highlightTerm.tlEra&&e.name.indexOf(highlightTerm.tlEra)!==-1});
-    if(eIdx>=0){var x=pad+eIdx*segW+segW/2;document.getElementById('timelineWrap').scrollTo({left:Math.max(0,x-document.getElementById('timelineWrap').clientWidth/2),behavior:'smooth'})}}}
-
-window.tlZoom=function(d){tlZoomLvl=d>0?Math.min(tlZoomLvl*1.3,5):Math.max(tlZoomLvl/1.3,0.5);renderTimeline()};
-window.tlResetZoom=function(){tlZoomLvl=1;renderTimeline();document.getElementById('timelineWrap').scrollTo({left:0,behavior:'smooth'})};
+    if(eIdx>=0){var x=pad+eIdx*segW+segW/2;document.getElementById('timelineWrap').scrollTo({left:Math.max(0,x-document.getElementById('timelineWrap').clientWidth/2),behavior:'smooth'})}
+  }
+}
+window.tlZoom=function(d){tlZoomLvl=d>0?Math.min(tlZoomLvl*1.3,5):Math.max(tlZoomLvl/1.3,0.5);document.getElementById('timelineTrack').style.width=(100*tlZoomLvl)+'%';document.getElementById('tlZoomLabel').textContent=Math.round(tlZoomLvl*100)+'%'};
+window.tlResetZoom=function(){tlZoomLvl=1;document.getElementById('timelineTrack').style.width='100%';document.getElementById('tlZoomLabel').textContent='100%';document.getElementById('timelineWrap').scrollTo({left:0,behavior:'smooth'})};
 document.getElementById('timelineWrap').addEventListener('wheel',function(e){if(e.ctrlKey||e.metaKey){e.preventDefault();e.deltaY<0?tlZoom(1):tlZoom(-1)}},{passive:false});
 
+// === AI 카드 렌더링 ===
 function renderAICard(item){
-var h='<div class="result-card" style="border-left:3px solid var(--accent)">';
-h+='<div class="result-header"><span class="result-term">'+esc(item.name)+'</span><span class="result-field field-'+esc(item.field||'')+'">'+esc(item.field||'')+'</span>';
-if(item.difficulty){var dc=item.difficulty==='상'?'var(--negative)':item.difficulty==='중'?'var(--warning)':'var(--positive)';h+='<span style="font-size:11px;padding:3px 10px;border-radius:12px;background:'+dc+'22;color:'+dc+';font-weight:600">난이도: '+esc(item.difficulty)+'</span>'}
-if(item.grade){h+='<span style="font-size:11px;padding:3px 10px;border-radius:12px;background:var(--surface2);color:var(--text2)">📅 '+esc(item.grade)+'</span>'}
-h+='</div>';
-if(item.reading)h+='<div class="result-reading">'+esc(item.reading)+'</div>';
-if(item.hanja&&item.hanja.length){h+='<div class="result-section"><div class="section-label"><span class="icon">🔤</span> 한자 풀이</div><div class="hanja-box">';item.hanja.forEach(function(j){h+='<div style="margin-bottom:6px"><span class="hanja-char">'+j.char+'</span><span class="hanja-meaning">'+esc(j.meaning)+'</span></div>'});h+='</div></div>'}
-h+='<div class="result-section"><div class="section-label"><span class="icon">📖</span> 이것은 무엇인가?</div><div class="section-content" style="font-size:16px;line-height:2"><strong>'+esc(item.meaning)+'</strong></div></div>';
-if(item.description)h+='<div class="result-section"><div class="section-label"><span class="icon">📝</span> 상세 설명</div><div class="section-content">'+esc(item.description)+'</div></div>';
-if(item.keyPoints&&item.keyPoints.length){h+='<div class="result-section"><div class="section-label"><span class="icon">⭐</span> 핵심 포인트</div><div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px">';item.keyPoints.forEach(function(p,i){h+='<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px"><span style="background:var(--accent);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">'+(i+1)+'</span><span style="font-size:14px;line-height:1.6;color:var(--text)">'+esc(p)+'</span></div>'});h+='</div></div>'}
-if(item.tlEra){h+='<div class="result-section"><div class="section-label"><span class="icon">📅</span> 타임라인 위치</div><div class="result-tl"><span class="era">'+esc(item.tlEra)+'</span>'+(item.tlYear?'<span class="year">· '+esc(item.tlYear)+'</span>':'')+'</div></div>'}
-if(item.commonMistakes&&item.commonMistakes.length){h+='<div class="result-section"><div class="section-label"><span class="icon">⚠️</span> 자주 틀리는 오해</div><div style="background:rgba(255,107,107,.06);border:1px solid rgba(255,107,107,.15);border-radius:var(--radius-sm);padding:14px 18px">';item.commonMistakes.forEach(function(m){h+='<div style="display:flex;gap:8px;margin-bottom:6px"><span style="color:var(--negative)">✗</span><span style="font-size:13px;color:var(--text2)">'+esc(m)+'</span></div>'});h+='</div></div>'}
-if(item.memoryTip){h+='<div class="result-section"><div class="section-label"><span class="icon">💡</span> 이렇게 기억하세요!</div><div style="background:rgba(255,234,167,.06);border:1px solid rgba(255,234,167,.15);border-radius:var(--radius-sm);padding:14px 18px;font-size:14px;line-height:1.7">'+esc(item.memoryTip)+'</div></div>'}
-if(item.relatedTopics&&item.relatedTopics.length){h+='<div class="result-section"><div class="section-label"><span class="icon">🔗</span> 함께 공부하면 좋은 것</div><div style="display:flex;flex-wrap:wrap;gap:8px">';item.relatedTopics.forEach(function(t){h+='<span style="background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--accent2)">'+esc(t)+'</span>'});h+='</div></div>'}
-if(item.importance)h+='<div class="result-section"><div class="section-label"><span class="icon">🎓</span> 왜 배우는가?</div><div class="section-content">'+esc(item.importance)+'</div></div>';
-if(item.realLife){h+='<div class="result-section"><div class="section-label"><span class="icon">🌍</span> 실생활 활용</div><div style="background:rgba(0,206,201,.06);border:1px solid rgba(0,206,201,.15);border-radius:var(--radius-sm);padding:14px 18px;font-size:14px;line-height:1.7">'+esc(item.realLife)+'</div></div>'}
-if(item.funFact){h+='<div class="result-section"><div class="section-label"><span class="icon">🎉</span> 재미있는 사실</div><div style="background:rgba(162,155,254,.06);border:1px solid rgba(162,155,254,.15);border-radius:var(--radius-sm);padding:14px 18px;font-size:14px;line-height:1.7;color:var(--text2);font-style:italic">💡 '+esc(item.funFact)+'</div></div>'}
-if(item.examTip)h+='<div class="result-section"><div class="section-label"><span class="icon">🎯</span> 시험 대비 꿀팁</div><div class="section-content" style="background:var(--surface2);padding:14px 18px;border-radius:var(--radius-sm);font-size:14px;border:1px solid var(--border)">'+esc(item.examTip)+'</div></div>';
-h+='</div>';return h}
+  var h='<div class="result-card" style="border-left:3px solid var(--accent)">';
+  h+='<div class="result-header"><span class="result-term">'+esc(item.name)+'</span><span class="result-field field-'+esc(item.field||'')+'">'+esc(item.field||'')+'</span>';
+  if(item.difficulty){var dc=item.difficulty==='상'?'var(--negative)':item.difficulty==='중'?'var(--warning)':'var(--positive)';h+='<span style="font-size:11px;padding:3px 10px;border-radius:12px;background:'+dc+'22;color:'+dc+';font-weight:600">난이도: '+esc(item.difficulty)+'</span>'}
+  if(item.grade){h+='<span style="font-size:11px;padding:3px 10px;border-radius:12px;background:var(--surface2);color:var(--text2)">📅 '+esc(item.grade)+'</span>'}
+  h+='</div>';
+  if(item.reading)h+='<div class="result-reading">'+esc(item.reading)+'</div>';
+  if(item.hanja&&item.hanja.length){h+='<div class="result-section"><div class="section-label"><span class="icon">🔤</span> 한자 풀이</div><div class="hanja-box">';item.hanja.forEach(function(j){h+='<div style="margin-bottom:6px"><span class="hanja-char">'+esc(j.char)+'</span><span class="hanja-meaning">'+esc(j.meaning)+'</span></div>'});h+='</div></div>'}
+  h+='<div class="result-section"><div class="section-label"><span class="icon">📖</span> 이것은 무엇인가?</div><div class="section-content" style="font-size:16px;line-height:2"><strong>'+esc(item.meaning)+'</strong></div></div>';
+  if(item.description)h+='<div class="result-section"><div class="section-label"><span class="icon">📝</span> 상세 설명</div><div class="section-content">'+esc(item.description)+'</div></div>';
+  if(item.keyPoints&&item.keyPoints.length){h+='<div class="result-section"><div class="section-label"><span class="icon">⭐</span> 핵심 포인트</div><div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px">';item.keyPoints.forEach(function(p,i){h+='<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px"><span style="background:var(--accent);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">'+(i+1)+'</span><span style="font-size:14px;line-height:1.6">'+esc(p)+'</span></div>'});h+='</div></div>'}
+  if(item.tlEra){h+='<div class="result-section"><div class="section-label"><span class="icon">📅</span> 타임라인 위치</div><div class="result-tl"><span class="era">'+esc(item.tlEra)+'</span>'+(item.tlYear?'<span class="year">· '+esc(item.tlYear)+'</span>':'')+'</div></div>'}
+  if(item.commonMistakes&&item.commonMistakes.length){h+='<div class="result-section"><div class="section-label"><span class="icon">⚠️</span> 자주 틀리는 오해</div><div style="background:rgba(255,107,107,.06);border:1px solid rgba(255,107,107,.15);border-radius:var(--radius-sm);padding:14px 18px">';item.commonMistakes.forEach(function(m){h+='<div style="display:flex;gap:8px;margin-bottom:6px"><span style="color:var(--negative)">✗</span><span style="font-size:13px;color:var(--text2)">'+esc(m)+'</span></div>'});h+='</div></div>'}
+  if(item.memoryTip)h+='<div class="result-section"><div class="section-label"><span class="icon">💡</span> 이렇게 기억하세요!</div><div style="background:rgba(255,234,167,.06);border:1px solid rgba(255,234,167,.15);border-radius:var(--radius-sm);padding:14px 18px;font-size:14px;line-height:1.7">'+esc(item.memoryTip)+'</div></div>';
+  if(item.relatedTopics&&item.relatedTopics.length){h+='<div class="result-section"><div class="section-label"><span class="icon">🔗</span> 함께 공부하면 좋은 것</div><div style="display:flex;flex-wrap:wrap;gap:8px">';item.relatedTopics.forEach(function(t){h+='<span style="background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--accent2)">'+esc(t)+'</span>'});h+='</div></div>'}
+  if(item.importance)h+='<div class="result-section"><div class="section-label"><span class="icon">🎓</span> 왜 배우는가?</div><div class="section-content">'+esc(item.importance)+'</div></div>';
+  if(item.realLife)h+='<div class="result-section"><div class="section-label"><span class="icon">🌍</span> 실생활 활용</div><div style="background:rgba(0,206,201,.06);border:1px solid rgba(0,206,201,.15);border-radius:var(--radius-sm);padding:14px 18px;font-size:14px;line-height:1.7">'+esc(item.realLife)+'</div></div>';
+  if(item.funFact)h+='<div class="result-section"><div class="section-label"><span class="icon">🎉</span> 재미있는 사실</div><div style="background:rgba(162,155,254,.06);border:1px solid rgba(162,155,254,.15);border-radius:var(--radius-sm);padding:14px 18px;font-size:14px;line-height:1.7;color:var(--text2);font-style:italic">💡 '+esc(item.funFact)+'</div></div>';
+  if(item.examTip)h+='<div class="result-section"><div class="section-label"><span class="icon">🎯</span> 시험 대비 꿀팁</div><div class="section-content" style="background:var(--surface2);padding:14px 18px;border-radius:var(--radius-sm);font-size:14px;border:1px solid var(--border)">'+esc(item.examTip)+'</div></div>';
+  h+='</div>';return h;
+}
 
-function esc(s){if(s==null)return'';s=String(s);return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-
-window.toggleSettings=async function(){var ov=document.getElementById("settingsOverlay");ov.classList.toggle("active");if(ov.classList.contains("active")){document.getElementById("adminPw").value="";try{var d={oaiSet:!!localStorage.getItem('oaiKey'),oaiPreview:(localStorage.getItem('oaiKey')||'').substring(0,8)+'...'};var s=document.getElementById("keyStatus");s.style.display="block";if(d.oaiSet){s.textContent="현재 상태: OpenAI ✅ "+d.oaiPreview;s.style.background="rgba(0,206,201,.08)";s.style.color="var(--positive)";s.style.border="1px solid rgba(0,206,201,.2)"}else{s.textContent="OpenAI API 키가 설정되지 않았습니다.";s.style.background="rgba(255,107,107,.08)";s.style.color="var(--negative)";s.style.border="1px solid rgba(255,107,107,.2)"}}catch(e){}}};
-window.saveSettings=async function(){
-  var pw=document.getElementById("adminPw").value.trim();
-  var oaiVal=document.getElementById("oaiKeyInput").value.trim();
-  
-  if(!oaiVal){showKS("OpenAI API 키를 입력해주세요.","err");return}
-  if(!oaiVal.startsWith("sk-or-")&&!oaiVal.startsWith("sk-")){showKS("API 키는 sk-로 시작해야 합니다.","err");return}
-  if(oaiVal.length<10){showKS("API 키가 너무 짧습니다. 올바른 키를 입력하세요.","err");return}
-  try{
-    localStorage.setItem('oaiKey',oaiVal);
-    showKS('✅ API 키가 저장되었습니다.','ok');
-    setTimeout(function(){toggleSettings()},1500);
-  }catch(e){showKS("❌ "+e.message,"err")}
-};
-function showKS(msg,type){var s=document.getElementById("keyStatus");s.textContent=msg;s.style.display="block";if(type==="ok"){s.style.background="rgba(0,206,201,.08)";s.style.color="var(--positive)";s.style.border="1px solid rgba(0,206,201,.2)"}else{s.style.background="rgba(255,107,107,.08)";s.style.color="var(--negative)";s.style.border="1px solid rgba(255,107,107,.2)"}}
-async function getOaiKey(){try{var d={oaiSet:!!localStorage.getItem('oaiKey'),oaiPreview:(localStorage.getItem('oaiKey')||'').substring(0,8)+'...'};return d.oaiSet?"yes":""}catch(e){return""}}
-
+// === AI 검색 ===
 window.aiSearch=async function(query){
-  var key=await getOaiKey();if(!key){alert('관리자가 API 키를 설정해야 합니다.');return}
+  var key=getOaiKey();
+  if(!key){ra.innerHTML='<div class="not-found-card"><div class="emoji">🔑</div><h3>API 키가 필요합니다</h3><p>⚙️ 설정에서 OpenRouter API 키를 입력해주세요<br><a href="https://openrouter.ai/keys" style="color:var(--accent2)">openrouter.ai/keys</a>에서 무료 발급 가능</p></div>';return}
   ra.innerHTML='<div class="ai-loading"><div class="spinner-sm"></div>AI가 "'+esc(query)+'"를 분석하고 있습니다...</div>';
   try{
     var prompt='당신은 중고등학생을 위한 친절한 학습 선생님입니다. 아래 단어에 대해 학생이 이해하기 쉽게 설명해주세요.\n\n단어: '+query+'\n\nJSON으로만 응답. 필드: field, reading, meaning, description, keyPoints(배열3개이상), commonMistakes(배열2개이상), memoryTip, relatedTopics(배열2개이상), importance, examTip, realLife, funFact, difficulty(상중하), grade(학년학기), hanja(배열), tlEra, tlYear';
-    var apiKey=localStorage.getItem('oaiKey')||'';
-    var res=await fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},body:JSON.stringify({model:'openai/gpt-4o-mini',messages:[{role:'system',content:'학습 사전 전문가. JSON으로만 응답. 한국어.'},{role:'user',content:prompt}],temperature:0.3,max_tokens:3000})});
-    if(!res.ok){var err=await res.json().catch(function(){return{}});throw new Error(err?.error?.message||'API 오류')}
-    var data=await res.json(),content=data.choices[0].message.content,jsonMatch=content.match(/\{[\s\S]*\}/);
+    var res=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('oaiKey')},
+      body:JSON.stringify({model:'openai/gpt-4o-mini',messages:[{role:'system',content:'학습 사전 전문가. JSON으로만 응답. 한국어.'},{role:'user',content:prompt}],temperature:0.3,max_tokens:3000})
+    });
+    if(!res.ok){var err=await res.json().catch(function(){return{}});throw new Error(err&&err.error?err.error.message:'API 오류 ('+res.status+')')}
+    var data=await res.json();
+    var content=data.choices[0].message.content;
+    var jsonMatch=content.match(/\{[\s\S]*\}/);
     if(!jsonMatch)throw new Error('JSON 파싱 실패');
-    var ai=JSON.parse(jsonMatch[0]);ai.name=query;
-    highlightTerm=ai.tlEra?ai:null;if(ai.tlEra)document.getElementById('timelineSection').classList.remove('hidden');
-    ra.innerHTML=renderAICard(ai);renderTimeline();
-  }catch(e){ra.innerHTML='<div class="not-found-card"><div class="emoji">❌</div><h3>AI 분석 실패</h3><p>'+esc(e.message)+'</p></div>'}};
+    var ai=JSON.parse(jsonMatch[0]);
+    ai.name=query;
+    highlightTerm=ai.tlEra?ai:null;
+    if(ai.tlEra)document.getElementById('timelineSection').classList.remove('hidden');
+    ra.innerHTML=renderAICard(ai);
+    renderTimeline();
+  }catch(e){
+    ra.innerHTML='<div class="not-found-card"><div class="emoji">❌</div><h3>AI 분석 실패</h3><p>'+esc(e.message)+'</p><p style="margin-top:10px;font-size:12px;color:var(--text3)">API 키를 확인하거나 다시 시도해주세요</p></div>';
+  }
+};
 
 renderTimeline();
 })();
