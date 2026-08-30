@@ -178,6 +178,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" media="print" onload="this.media='all'">
+<script src="../config.js"></script>
 </head>
 <body>
 <div class="hdr">
@@ -318,8 +319,8 @@ window.toggleTheme=function(){var d=document.documentElement;var c=d.getAttribut
 var savedTheme=localStorage.getItem('theme');if(savedTheme)document.documentElement.setAttribute('data-theme',savedTheme);document.getElementById('themeBtn').innerHTML=savedTheme==='dark'?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>':'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';var tl=document.getElementById('themeLabel');if(tl)tl.textContent=savedTheme==='dark'?'라이트':'다크';
 
 // Settings
-function toggleSettings(){var ov=document.getElementById('settingsOverlay');ov.classList.toggle('active');if(ov.classList.contains('active')){var k=localStorage.getItem('oaiKey')||'';document.getElementById('oaiKeyInput').value=k;showKS(k?'현재 상태: OpenAI &#10004; '+k.substring(0,8)+'...':'OpenRouter API 키가 설정되지 않았습니다.',k?'ok':'err')}}
-function saveSettings(){var v=document.getElementById('oaiKeyInput').value.trim();if(!v){showKS('API 키를 입력해주세요.','err');return}if(!v.startsWith('sk-or-')&&!v.startsWith('sk-')){showKS('키는 sk-로 시작해야 합니다.','err');return}if(v.length<10){showKS('키가 너무 짧습니다.','err');return}localStorage.setItem('oaiKey',v);showKS('&#10004; 저장 완료!','ok');setTimeout(function(){toggleSettings()},1200)}
+function toggleSettings(){var ov=document.getElementById('settingsOverlay');ov.classList.toggle('active');if(ov.classList.contains('active')){var k=API_CONFIG.openrouter||'';document.getElementById('oaiKeyInput').value=k;showKS(k?'현재 상태: OpenAI &#10004; '+k.substring(0,8)+'...':'OpenRouter API 키가 설정되지 않았습니다.',k?'ok':'err')}}
+
 function showKS(m,t){var s=document.getElementById('ks');s.textContent=m;s.style.display='block';s.style.background=t==='ok'?'rgba(0,206,201,.08)':'rgba(255,107,107,.08)';s.style.color=t==='ok'?'var(--positive)':'var(--negative)';s.style.border='1px solid '+(t==='ok'?'rgba(0,206,201,.2)':'rgba(255,107,107,.2)');s.style.borderRadius='var(--radius-sm)';s.style.padding='8px 12px';s.style.fontSize='12px'}
 window.toggleSettings=toggleSettings;window.saveSettings=saveSettings;
 
@@ -392,7 +393,7 @@ function showStats(q,item){var sb=document.getElementById('statsBar');sb.classLi
 
 // AI Search
 window.aiSearch=async function(query){
-  var key=localStorage.getItem('oaiKey');
+  var key=API_CONFIG.openrouter;
   if(!key){ra.innerHTML='<div class="nf"><div class="em">&#128273;</div><h3>API 키가 필요합니다</h3><p>&#9881; 설정에서 OpenRouter API 키를 입력해주세요<br><a href="https://openrouter.ai/keys" style="color:var(--accent2)">openrouter.ai/keys</a>에서 무료 발급 가능</p></div>';return}
   ra.innerHTML='<div class="ai-load"><div class="sp-sm"></div>AI가 "'+esc(query)+'"를 분석하고 있습니다...</div>';
   try{

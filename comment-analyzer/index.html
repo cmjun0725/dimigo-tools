@@ -112,6 +112,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" media="print" onload="this.media='all'">
+<script src="../config.js"></script>
 </head>
 <body>
 <div class="ct">
@@ -155,10 +156,11 @@ window.toggleTheme=function(){var d=document.documentElement;var c=d.getAttribut
 (function(){var t=localStorage.getItem('theme');if(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('themeBtn').innerHTML=t==='dark'?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>':'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';}})();
 
 (function(){
-function toggleSettings(){var ov=document.getElementById('settingsOverlay');ov.classList.toggle('active');if(ov.classList.contains('active')){var yk=localStorage.getItem('ytKey')||'';var ok=localStorage.getItem('oaiKey')||'';document.getElementById('ytKeyInput').value=yk;document.getElementById('oaiKeyInput').value=ok;showKS('YouTube: '+(yk?'OK':'미설정')+' | OpenRouter: '+(ok?'OK':'미설정'),'info')}}
-function saveSettings(){var yk=document.getElementById('ytKeyInput').value.trim();var ok=document.getElementById('oaiKeyInput').value.trim();if(yk)localStorage.setItem('ytKey',yk);else localStorage.removeItem('ytKey');if(ok)localStorage.setItem('oaiKey',ok);else localStorage.removeItem('oaiKey');showKS('저장 완료!','ok');setTimeout(function(){toggleSettings()},1000)}
+function toggleSettings(){var ov=document.getElementById('settingsOverlay');ov.classList.toggle('active');if(ov.classList.contains('active')){var yt=API_CONFIG.youtube;var oai=API_CONFIG.openrouter;var ks=document.getElementById('ks');var msgs=[];if(oai&&oai!=='YOUR_OPENROUTER_API_KEY_HERE')msgs.push('✅ OpenRouter: '+oai.substring(0,10)+'...');else msgs.push('⚠️ OpenRouter 미설정');if(yt)msgs.push('✅ YouTube: '+yt.substring(0,10)+'...');else msgs.push('⚠️ YouTube 미설정');ks.style.display='block';ks.style.background='rgba(108,92,231,.08)';ks.style.color='var(--ac2)';ks.style.border='1px solid rgba(108,92,231,.2)';ks.style.borderRadius='var(--rs)';ks.style.padding='8px 12px';ks.style.fontSize='12px';ks.textContent=msgs.join(' | ')}}
 function showKS(m,t){var s=document.getElementById('ks');s.textContent=m;s.style.display='block';s.style.background=t==='ok'?'rgba(0,206,201,.08)':t==='err'?'rgba(255,107,107,.08)':'rgba(108,92,231,.08)';s.style.color=t==='ok'?'var(--pos)':t==='err'?'var(--neg)':'var(--ac2)';s.style.border='1px solid '+(t==='ok'?'rgba(0,206,201,.2)':t==='err'?'rgba(255,107,107,.2)':'rgba(108,92,231,.2)');s.style.borderRadius='var(--rs)';s.style.padding='8px 10px';s.style.fontSize='11px'}
-window.toggleSettings=toggleSettings;window.saveSettings=saveSettings;
+function saveServerKeys(){showKS('config.js 파일을 GitHub에서 직접 편집하세요.\n\n1. GitHub.com 접속\n2. dimigo-tools/config.js 열기\n3. 값을 변경하고 저장','info')}
+function checkKeyStatus(){var yt=API_CONFIG.youtube;var oai=API_CONFIG.openrouter;var ok=oai&&oai!=='YOUR_OPENROUTER_API_KEY_HERE';var yk=!!yt;showKS((ok?'✅':'⚠️')+' OpenRouter '+(ok?'설정됨':'미설정')+' | '+(yk?'✅':'⚠️')+' YouTube '+(yk?'설정됨':'미설정'),ok?'ok':'err')}
+window.toggleSettings=toggleSettings;window.saveServerKeys=saveServerKeys;window.checkKeyStatus=checkKeyStatus;
 function showError(m){var e=document.getElementById('errorMsg');e.textContent=m;e.classList.add('active')}
 function hideError(){document.getElementById('errorMsg').classList.remove('active')}
 function showLd(s){document.getElementById('loading').classList.toggle('active',s)}
@@ -168,7 +170,7 @@ function esc(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').repla
 function extractVideoId(url){if(!url)return null;try{var u=new URL(url.indexOf('?')>-1?url:'https://'+url);var v=u.searchParams.get('v');if(v&&v.length===11)return v;var segs=u.pathname.split('/').filter(Boolean);if(segs.length>0&&segs[segs.length-1].length===11)return segs[segs.length-1]}catch(e){}return null}
 
 async function fetchVideoInfo(videoId){
-  var key=localStorage.getItem('ytKey');
+  var key=API_CONFIG.youtube;
   if(!key)return null;
   try{
     var res=await fetch('https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id='+videoId+'&key='+key);
@@ -181,7 +183,7 @@ async function fetchVideoInfo(videoId){
 }
 
 async function fetchComments(videoId){
-  var key=localStorage.getItem('ytKey');
+  var key=API_CONFIG.youtube;
   if(!key)return[];
   var all=[],pageToken='',page=0;
   while(all.length<150&&page<8){
@@ -205,7 +207,7 @@ async function fetchComments(videoId){
 }
 
 async function analyzeWithAI(videoInfo,url,comments){
-  var key=localStorage.getItem('oaiKey');
+  var key=API_CONFIG.openrouter;
   if(!key)throw new Error('OpenRouter API 키가 없습니다. 설정에서 입력해주세요.');
   var hasReal=comments&&comments.length>0;
   var ctx='';
@@ -291,8 +293,8 @@ window.doAnalyze=async function(){
   if(!url){showError('YouTube 링크를 입력해주세요.');return}
   var videoId=extractVideoId(url);
   if(!videoId){showError('올바른 YouTube 링크를 입력해주세요.');return}
-  var ytKey=localStorage.getItem('ytKey');
-  var oaiKey=localStorage.getItem('oaiKey');
+  var ytKey=API_CONFIG.youtube;
+  var oaiKey=API_CONFIG.openrouter;
   if(!ytKey){showError('YouTube Data API 키가 필요합니다. 설정에서 입력해주세요.');return}
   if(!oaiKey){showError('OpenRouter API 키가 필요합니다. 설정에서 입력해주세요.');return}
   var btn=document.getElementById('analyzeBtn');btn.disabled=true;btn.textContent='분석 중...';
