@@ -3,13 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#08080d">
+<link rel="dns-prefetch" href="https://openrouter.ai">
+<link rel="dns-prefetch" href="https://www.googleapis.com">
+<link rel="dns-prefetch" href="https://fonts.googleapis.com">
 <title>댓글 분석기</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap');
+/* font loaded via <link> in <head> */
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
 :root{--bg:#08080d;--sf:#12121c;--sf2:#1a1a2e;--sf3:#222238;--bd:#2a2a45;--tx:#f0f0f8;--tx2:#8888a8;--tx3:#555570;--ac:#6c5ce7;--ac2:#a29bfe;--acg:rgba(108,92,231,.4);--pos:#00cec9;--neg:#ff6b6b;--neu:#a29bfe;--info:#74b9ff;--warn:#ffeaa7;--r:16px;--rs:10px;--sh:0 8px 32px rgba(0,0,0,.5)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Noto Sans KR','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
@@ -100,7 +104,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .tst{background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:5px 12px;font-size:11px;color:var(--tx2)}
 .tst .n{font-weight:700;color:var(--ac2)}
 @media(max-width:600px){.ct{padding:14px}.hdr{padding:28px 0 16px}.hdr-badge{font-size:10px;padding:4px 10px}.hdr h1{font-size:1.5em}.hdr p{font-size:12px}.ib{width:40px;height:40px;font-size:16px}.is{padding:14px}.ir{flex-direction:column;gap:10px}.ir input{width:100%;min-height:48px;font-size:16px;padding:14px}.ab{width:100%;min-height:48px;font-size:15px;padding:14px}.ab:active{transform:scale(0.97)}.ah{font-size:10px}.em{font-size:12px;padding:10px 14px}.ld{padding:28px 16px}.ld .sp{width:32px;height:32px}.ld p{font-size:12px}.tree{padding:12px 0}.troot{padding:14px;border-radius:12px}.troot img{max-width:100%}.troot .rt{font-size:14px}.troot .rch{font-size:11px}.troot .rs{gap:8px}.troot .rs span{font-size:10px}.troot .rsum{font-size:11px}.troot .rins{font-size:10px;padding:6px 10px}.ttrunk{height:24px}.tbranches{flex-direction:column;align-items:center}.tbranch{min-width:100%;max-width:100%;padding:0 4px;margin-bottom:10px}.bstem{height:16px}.bnode{padding:12px;border-radius:10px;min-height:44px}.bnode:active{transform:scale(0.97)}.bname{font-size:12px}.bcnt{font-size:9px}.bsum{font-size:9px}.bsub{margin-bottom:3px}.bsn{padding:8px 10px;font-size:11px;min-height:36px;display:flex;align-items:center}.bsn:active{background:var(--sf3)}.bsc{padding:2px 0 2px 10px}.lc{padding:5px 6px;font-size:10px;line-height:1.4}.cl-item{padding:8px 0}.cl-text{font-size:11px}.cl-meta{font-size:9px}.tstats{gap:6px}.tst{padding:4px 10px;font-size:10px}.sov .sbx{padding:20px;width:95%;max-width:none}.sov .sbx h2{font-size:14px}.sov .sbx input{font-size:16px;padding:12px;min-height:44px}.sov .sbx label{font-size:11px}.sov .sbx .brow{flex-direction:column;gap:8px}.sov .sbx button{padding:12px;min-height:44px;font-size:14px}}@media(max-width:380px){.hdr h1{font-size:1.3em}.ir input{font-size:14px;padding:12px}.ab{font-size:14px}.bnode{padding:10px}}
-</style>
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" media="print" onload="this.media='all'">
 </head>
 <body>
 <div class="ct">
