@@ -256,7 +256,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <input type="password" id="oaiKeyInput" placeholder="sk-or-..." autocomplete="off">
     <div class="hint">OpenRouter에서 발급 (openrouter.ai/keys)</div>
     <div id="ks"></div>
-    <div class="brow"><button class="bcl" onclick="toggleSettings()">닫기</button><button class="bsv" onclick="saveSettings()">&#128190; 저장</button></div>
+    <div class="brow"><button class="bcl" onclick="toggleSettings()">닫기</button><button class="bsv" onclick="saveServerKey()">&#128190; 저장</button></div>
   </div>
 </div>
 
@@ -322,7 +322,7 @@ var savedTheme=localStorage.getItem('theme');if(savedTheme)document.documentElem
 function toggleSettings(){var ov=document.getElementById('settingsOverlay');ov.classList.toggle('active');if(ov.classList.contains('active')){var k=API_CONFIG.openrouter||'';document.getElementById('oaiKeyInput').value=k;showKS(k?'현재 상태: OpenAI &#10004; '+k.substring(0,8)+'...':'OpenRouter API 키가 설정되지 않았습니다.',k?'ok':'err')}}
 
 function showKS(m,t){var s=document.getElementById('ks');s.textContent=m;s.style.display='block';s.style.background=t==='ok'?'rgba(0,206,201,.08)':'rgba(255,107,107,.08)';s.style.color=t==='ok'?'var(--positive)':'var(--negative)';s.style.border='1px solid '+(t==='ok'?'rgba(0,206,201,.2)':'rgba(255,107,107,.2)');s.style.borderRadius='var(--radius-sm)';s.style.padding='8px 12px';s.style.fontSize='12px'}
-window.toggleSettings=toggleSettings;window.saveSettings=saveSettings;
+window.toggleSettings=toggleSettings;window.saveServerKey=saveServerKey;window.checkKeyStatus=checkKeyStatus;
 
 // History
 function addHistory(q){searchHistory=searchHistory.filter(function(h){return h!==q});searchHistory.unshift(q);if(searchHistory.length>10)searchHistory.pop();localStorage.setItem('searchHist',JSON.stringify(searchHistory));renderHistory()}
