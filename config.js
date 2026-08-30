@@ -6,7 +6,7 @@
 var API_CONFIG = {
   // OpenRouter API 키 (AI 분석용)
   // 발급: https://openrouter.ai/keys
-  openrouter: 'YOUR_OPENROUTER_API_KEY_HERE',
+  openrouter: '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',
 
   // YouTube Data API 키 (댓글 수집용, 선택사항)
   // 발급: https://console.cloud.google.com
