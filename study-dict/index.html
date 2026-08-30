@@ -298,7 +298,7 @@ var EVENTS=[
   {name:'민주화',year:1987,era:'modern',desc:'6월민주항쟁'}
 ];
 var currentField='all',highlightTerm=null,tlZoomLvl=1;
-var si=document.getElementById('searchInput'),se=document.getElementById('suggestions'),ra=document.getElementById('resultArea');
+var si=document.getElementById('searchInput'),ra=document.getElementById('resultArea');
 var BASE_W=1000;
 var searchHistory=JSON.parse(localStorage.getItem('searchHist')||'[]');
 var bookmarks=JSON.parse(localStorage.getItem('bookmarks')||'[]');
@@ -307,7 +307,7 @@ function esc(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').repla
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2000)}
 
 // Theme
-function toggleTheme(){var d=document.documentElement;var c=d.getAttribute('data-theme');d.setAttribute('data-theme',c==='light'?'dark':'light');document.getElementById('themeBtn').textContent=c==='light'?'🌙':'☀️';localStorage.setItem('theme',c==='light'?'dark':'light')}
+window.toggleTheme=function(){var d=document.documentElement;var c=d.getAttribute('data-theme');d.setAttribute('data-theme',c==='light'?'dark':'light');document.getElementById('themeBtn').textContent=c==='light'?'🌙':'☀️';localStorage.setItem('theme',c==='light'?'dark':'light')}
 var savedTheme=localStorage.getItem('theme');if(savedTheme)document.documentElement.setAttribute('data-theme',savedTheme);document.getElementById('themeBtn').textContent=savedTheme==='light'?'☀️':'🌙';
 
 // Settings
@@ -331,11 +331,11 @@ document.querySelectorAll('.spill').forEach(function(p){p.addEventListener('clic
 
 // Search
 document.getElementById('searchBtn').addEventListener('click',function(){doSearch()});
-si.addEventListener('keydown',function(e){if(e.key==='Enter'){doSearch();se.classList.remove('show')}});
-document.addEventListener('click',function(e){if(!e.target.closest('.scon'))se.classList.remove('show')});
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){si.value='';se.classList.remove('show');var ws=document.getElementById('welcomeSection');if(ws)ws.style.display='';document.getElementById('timelineSection').classList.add('hidden');ra.innerHTML='';var sb=document.getElementById('statsBar');sb.classList.remove('show');sb.innerHTML=''}});
+si.addEventListener('keydown',function(e){if(e.key==='Enter'){doSearch();null}});
+document.addEventListener('click',function(e){if(!e.target.closest('.scon'))null});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){si.value='';null;var ws=document.getElementById('welcomeSection');if(ws)ws.style.display='';document.getElementById('timelineSection').classList.add('hidden');ra.innerHTML='';var sb=document.getElementById('statsBar');sb.classList.remove('show');sb.innerHTML=''}});
 
-function doSearch(){var q=si.value.trim();if(!q)return;se.classList.remove('show');document.getElementById('welcomeSection').style.display='none';document.getElementById('timelineSection').classList.add('hidden');addHistory(q);aiSearch(q)}
+function doSearch(){var q=si.value.trim();if(!q)return;null;document.getElementById('welcomeSection').style.display='none';document.getElementById('timelineSection').classList.add('hidden');addHistory(q);aiSearch(q)}
 
 // Example tags
 var examples=[

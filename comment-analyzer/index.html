@@ -205,7 +205,7 @@ async function analyzeWithAI(videoInfo,url,comments){
   var rule=hasReal?
     '위 댓글들은 YouTube에서 실제로 수집한 실제 댓글입니다. 아래 규칙을 반드시 지키세요:\n1. categories[].subCategories[].comments 배열에는 위 댓글 원문을 그대로 복사하세요\n2. 절대 댓글을 만들거나 수정하지 마세요\n3. 원문에 없는 내용을 추가하지 마세요\n4. 댓글이 길면 앞 100자만 잘라도 됩니다 (그 외에는 그대로)':
     '댓글을 수집할 수 없었습니다. 영상 정보를 바탕으로 예상되는 댓글 유형을 보여주세요.';
-  var prompt='YouTube 댓글 분석 전문가입니다.\n\n'+ctx+commentSection+'\n\n'+rule+'\n\n아래 JSON 형식으로만 응답하세요:\n{"categories":[{"name":"카테고리명","type":"positive","summary":"한줄요약","subCategories":[{"name":"세부분류","comments":["댓글원문1","댓글원문2"]}]}],"totalAnalyzed':0,"overallSummary":"전체요약","videoInsight":"영상분석"}';
+  var prompt='YouTube 댓글 분석 전문가입니다.\n\n'+ctx+commentSection+'\n\n'+rule+'\n\n아래 JSON 형식으로만 응답하세요:\n{"categories":[{"name":"카테고리명","type":"positive","summary":"한줄요약","subCategories":[{"name":"세부분류","comments":["댓글원문1","댓글원문2"]}]}],"totalAnalyzed":0,"overallSummary":"전체요약","videoInsight":"영상분석"}';
   var res=await fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'openai/gpt-4o-mini',messages:[{role:'system',content:'YouTube 댓글 분석 전문가. JSON으로만 응답. 한국어. 실제 댓글 원문을 그대로 복사하여 분류하세요. 댓글을 만들지 마세요.'},{role:'user',content:prompt}],temperature:0.15,max_tokens:4000})});
   if(!res.ok){var err=await res.json().catch(function(){return{}});throw new Error(err&&err.error?err.error.message:'API 오류 ('+res.status+')')}
   var data=await res.json();
