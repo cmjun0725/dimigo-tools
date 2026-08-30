@@ -396,7 +396,7 @@ window.aiSearch=async function(query){
     var m=content.match(/\{[\s\S]*\}/);if(!m)throw new Error('JSON 파싱 실패');
     var ai=JSON.parse(m[0]);ai.name=query;
     highlightTerm=ai.tlEra?ai:null;
-    if(ai.tlEra)document.getElementById('timelineSection').classList.remove('hidden');
+    
     showStats(query,ai);
     ra.innerHTML=renderAICard(ai,query);renderTimeline();
   }catch(e){ra.innerHTML='<div class="nf"><div class="em">&#10060;</div><h3>AI 분석 실패</h3><p>'+esc(e.message)+'</p></div>'}
